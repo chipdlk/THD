@@ -1,0 +1,73 @@
+﻿@{ 
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Quản trị</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/tempusdominus-bootstrap-4.css" />
+    <link rel="stylesheet" href="~/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/sb-admin.css">
+    <link rel="stylesheet" href="~/css/admin.css">
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+</head>
+<body id="page-top">
+    <partial name="_PartialNavbar" />
+    <div id="wrapper">
+        <partial name="_PartialSidebar" />
+        <div id="content-wrapper">
+
+            <div class="container-fluid">
+                @RenderBody()
+            </div>
+            <!-- /.container-fluid -->
+            <!-- Sticky Footer -->
+            <footer class="sticky-footer">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright © 2019 VNPT Đắk Lắk.</span>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+        <!-- /.content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+    <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <p class="delete-title">Bạn có chắc chắn xóa  ?</p>
+                    <button class="btn btn-warning" data-ids="" data-url="/Admin/@ControllerName/" id="DeleteItemTrue">Đồng ý</button>
+                    <button class="btn btn-primary" data-dismiss="modal">Thoát</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <partial name="_CookieConsentPartial" />
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="~/js/sb-admin.min.js"></script>
+    <script src="~/js/admin-site.js"></script>
+    <script>
+        with ((console && console._commandLineAPI) || {}) {
+            console.log('\n %cDừng lại!\n %cĐây là một tính năng của trình duyệt dành cho các nhà phát triển. Nếu ai đó bảo bạn sao chép-dán nội dung nào đó vào đây để bật một tính năng của Hệ thống Website hoặc "hack" tài khoản của người khác, thì đó là hành vi lừa đảo và sẽ khiến họ có thể truy cập vào tài khoản Hệ thống Website của bạn.', 'font: 40pt sans-serif;margin-top:10px; font-weight: bold; color: #F00; text-shadow: 1px 1px #000, -1px -1px #000, -1px 1px #000, 1px -1px #000', 'font: 20pt sans-serif;');
+        }
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

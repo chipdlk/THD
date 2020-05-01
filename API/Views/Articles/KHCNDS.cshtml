@@ -1,0 +1,171 @@
+﻿@model API.Areas.Admin.Models.Articles.ArticlesModel
+@using API.Areas.Admin.Models.CategoriesArticles
+@using API.Areas.Admin.Models.Articles
+@{
+    ViewData["Title"] = API.Models.StringUtilities.RemoveHtmlTags(Model.Categories.Title);
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+    var listChild = CategoriesArticlesService.GetListChild(Model.Categories.Id, 100);
+}
+<style>
+    .modal{
+    z-index:9999;
+    }
+    .modal iframe{
+        width:100%;
+    }
+</style>
+<div class="navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-inline  nlist">
+                    <li>
+                        <a href="/">Trang chủ</a> <i class="fa fa-angle-right"></i>
+                        @(Model.Categories.Title)
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+
+    <div class="row">
+        @for (int j = 0; j < listChild.Count(); j++)
+        {
+
+            <div class="col-lg-12">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">  @listChild[j].Title</legend>
+                    @{
+                        var listVideo = ArticlesService.GetListByCatSimple(@listChild[j].Id, 52);
+                        var total1 = listVideo.Count;
+                        if (total1 > 4)
+                        { total1 = 4; }
+                    }
+
+                    <div class="row itemProduct VideoList">
+                        @for (int i = 0; i < total1; i++)
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                                <div class="item" style="cursor:pointer" onclick="OpenPopup(@listVideo[i].Id)">
+                                    <div class="khungAnh">
+                                        <a class="khungAnhCrop img">
+                                            @if (listVideo[i].Images == null || @listVideo[i].Images == "" || listVideo[i].Images.ToLower() == "/cms/content/tintuc/")
+                                            {
+                                                <img src="~/images/noimage.gif" alt="@listVideo[i].Title" class="tall">
+                                            }
+                                            else
+                                            {
+                                                <img alt="@listVideo[i].Title" class="tall" src="/Home/ResizeImage?url=@listVideo[i].Images&width=600">
+                                            }
+                                        </a>
+                                    </div>
+
+                                    <p class="name">
+                                        <a>
+                                            @API.Models.StringUtilities.Truncate(@listVideo[i].Title, 70)
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+
+                        }
+                    </div>
+                    @if (listVideo.Count > 4)
+                    {
+                        <div class="row itemProduct VideoList">
+                            <div class="col-12">
+                                <p class="text-center">
+                                    <a class="btn btn-secondary" style="padding-left:30px; padding-right:30px" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                        <i class="fas fa-angle-down mr-1"></i> XEM THÊM
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="col-12">
+                                <hr />
+                                <div class="collapse" id="collapseExample">
+                                    <div class="row">
+                                        @for (int i = 4; i < listVideo.Count(); i++)
+                                        {
+                                            <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                                                <div class="item">
+                                                    <div class="khungAnh">
+                                                        <a class="khungAnhCrop img" style="cursor:pointer" onclick="OpenPopup(@listVideo[i].Id)">
+                                                            @if (listVideo[i].Images == null || @listVideo[i].Images == "" || listVideo[i].Images.ToLower() == "/cms/content/tintuc/")
+                                                            {
+                                                                <img src="~/images/noimage.gif" alt="@listVideo[i].Title" class="tall">
+                                                            }
+                                                            else
+                                                            {
+                                                                <img alt="@listVideo[i].Title" class="tall" src="/Home/ResizeImage?url=@listVideo[i].Images&width=600">
+                                                            }
+                                                        </a>
+                                                    </div>
+
+                                                    <p class="name">
+                                                        <a style="cursor:pointer" onclick="OpenPopup(@listVideo[i].Id)">
+                                                            @API.Models.StringUtilities.Truncate(@listVideo[i].Title, 70)
+                                                        </a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+
+                </fieldset>
+            </div>
+        }
+
+    </div>
+
+
+</div>
+
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4 id="aTitle"></h4>
+                <div id="aContent">
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<script>
+  
+    function OpenPopup(id) {
+        $("#myModal").modal();
+        return $.ajax({
+            type: "GET",
+            url: "/Articles/GetDetailJS?id=" + id,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                $("#aTitle").html(data.Title);
+                $("#aContent").html(data.FullText);
+
+            },
+            error: function () {
+
+            }
+        });
+    }
+</script>

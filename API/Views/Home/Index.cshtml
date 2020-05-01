@@ -1,0 +1,214 @@
+﻿@{
+    List<API.Areas.Admin.Models.CategoriesArticles.CategoriesArticles> ListCatFeaturedHome = API.Areas.Admin.Models.CategoriesArticles.CategoriesArticlesService.GetListFeaturedHome();
+    List<API.Areas.Admin.Models.Articles.Articles> ListArticleByCat = new List<API.Areas.Admin.Models.Articles.Articles>();
+    var listBannerPo3 = API.Areas.Admin.Models.Banners.BannersService.GetListByCat(3);
+    var listBannerPo6 = API.Areas.Admin.Models.Banners.BannersService.GetListByCat(6);
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <partial name="_PartialSlideshows" />
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-3">
+
+    <div class="row top">
+        <div class="col-lg-8 col-md-7 col-sm-12">
+            <!--Tin noi bat-->
+            <div class="headTop">
+                <h2>TIN NỔI BẬT</h2> 
+                <div class="bar"></div>
+                <div class="clearfix"></div>
+            </div>
+            <partial name="_PartialNewsFeatured" />
+            <!--End tin noi bat-->
+        </div>
+        <div class="col-lg-4 col-md-5 col-sm-12">
+            <!--Thông báo-->
+            <div class="headTop">
+                <h2>THÔNG BÁO</h2>
+                <div class="bar"> <a href="/thong-bao.html">Xem tất cả</a></div>
+                <div class="clearfix"></div>
+            </div>
+            <partial name="_PartialNotification" />
+            <!--End Thông báo-->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <!--Banner-->
+            @foreach (var item in listBannerPo3)
+            {
+                <div class="BannerItem mb-2" style="border:5px solid orange">
+                    <a href="@item.Link" target="@item.Target">
+                        <img src="@item.Image" alt="@item.Title" />
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="col1">
+              
+                
+                <!--Tin tuc-->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="category-list">
+                            <!---------Category list  ---------->
+                            @if (ListCatFeaturedHome != null && ListCatFeaturedHome.Count() > 0)
+                            {
+                                @for (int i = 0; i < ListCatFeaturedHome.Count(); i++)
+                                {
+                                    ListArticleByCat = null;
+                                    ListArticleByCat = API.Areas.Admin.Models.Articles.ArticlesService.GetListNew(ListCatFeaturedHome[i].Id, 6);
+                                    <div class="cat-item">
+                                        <div class="header">
+                                            <h4>
+                                                <a asp-controller="Articles" asp-action="GetByCat" asp-route-id="@ListCatFeaturedHome[i].Id" asp-route-alias="@ListCatFeaturedHome[i].Alias">@ListCatFeaturedHome[i].Title </a>
+                                               
+
+                                            </h4>
+                                        </div>
+                                        <div class="body">
+                                            <div class="row">
+                                                @if (@ListCatFeaturedHome[i].Type == 1)
+                                                {
+                                                    if (ListArticleByCat != null && ListArticleByCat.Count() > 0)
+                                                    {
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="first-article-item">
+                                                                <a class="img" asp-controller="Articles" asp-action="Detail" asp-route-id="@ListArticleByCat[0].Id" asp-route-alias="@ListArticleByCat[0].Alias" title="@ListArticleByCat[0].Title">
+                                                                    @if (ListArticleByCat[0].Images == null || @ListArticleByCat[0].Images == "" || ListArticleByCat[0].Images.ToLower() == "/cms/content/tintuc/")
+                                                                    {
+                                                                        <img src="~/images/noimage.gif" alt="@ListArticleByCat[0].Title">
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img alt="@ListArticleByCat[0].Title" class="tall" src="/Home/ResizeImage?url=@ListArticleByCat[0].Images&width=600">
+                                                                    }
+                                                                </a>
+                                                                <p class="title">
+                                                                    <a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListArticleByCat[0].Id" asp-route-alias="@ListArticleByCat[0].Alias" title="@ListArticleByCat[0].Title">
+                                                                        @ListArticleByCat[0].Title
+                                                                    </a>
+
+                                                                </p>
+                                                                <p class="ovv">
+                                                                    @API.Models.StringUtilities.Truncate(@ListArticleByCat[0].IntroText, 250)
+                                                                </p>
+                                                            </div>
+                                                        </div>
+
+                                                    }
+
+                                                    @if (ListArticleByCat != null && ListArticleByCat.Count() > 1)
+                                                    {
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <ul>
+                                                                @for (int m = 1; m < ListArticleByCat.Count(); m++)
+                                                                {
+                                                                    <li>
+                                                                        <a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListArticleByCat[m].Id" asp-route-alias="@ListArticleByCat[m].Alias" title="@ListArticleByCat[m].Title">
+                                                                            @API.Models.StringUtilities.Truncate(@ListArticleByCat[m].Title, 250) <span class="date">(@ListArticleByCat[m].PublishUpShow)</span>
+                                                                        </a>
+                                                                    </li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    }
+                                                }
+
+                                                else
+                                                {
+                                                    @for (int m = 0; m < ListArticleByCat.Count(); m++)
+                                                    {
+                                                        <div class="col-lg-4 col-sm-12 col-12">
+
+                                                            <div class="khungAnh news2">
+                                                                <a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListArticleByCat[m].Id" asp-route-alias="@ListArticleByCat[m].Alias" title="@ListArticleByCat[m].Title" class="khungAnhCrop">
+                                                                    @if (ListArticleByCat[m].Images == null || ListArticleByCat[m].Images == "" || ListArticleByCat[m].Images.ToLower() == "/cms/content/tintuc/")
+                                                                    {
+                                                                        <img src="~/images/noimage.gif" alt="@ListArticleByCat[m].Title">
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img src="/Home/ResizeImage?url=@ListArticleByCat[m].Images&width=600" title="@ListArticleByCat[m].Title" />
+                                                                    }
+
+                                                                </a>
+
+                                                                <div class="title">
+                                                                    <a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListArticleByCat[m].Id" asp-route-alias="@ListArticleByCat[m].Alias" title="@ListArticleByCat[m].Title">
+                                                                        @ListArticleByCat[m].Title
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+
+                                             
+                                                            
+                                                        </div>
+                                                    }
+                                                }
+
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <!---------End Category list  ---------->
+
+
+                        </div>
+                    </div>
+
+                </div>
+                <!--End Tin tuc-->
+                <!--Banner-->
+                @foreach (var item in listBannerPo6)
+                {
+                    <div class="BannerItem mb-2">
+                        <a href="@item.Link" target="@item.Target">
+                            <img src="@item.Image" alt="@item.Title" />
+                        </a>
+                    </div>
+                }
+
+
+            </div>
+            <div class="col2">
+                <partial name="_PartialRightCol" />
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+    <script>
+        $("#content-slider2").lightSlider({
+            loop: true,
+            keyPress: true,
+            item: 1,
+            speed: 800,
+            pause: 4000,
+            auto: true,
+            controls: false,
+            loop: true,
+            pager: true
+        });
+    </script>
+
+}

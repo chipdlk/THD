@@ -1,0 +1,73 @@
+﻿@model API.Areas.Admin.Models.Reviews.ReviewsModel
+@using Microsoft.AspNetCore.Http
+
+@{
+    ViewData["Title"] = "Thông tin tư vấn" +  (Model.Item.FullName);
+    ViewData["Description"] = (Model.Item.Introtext);
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+
+    var listHot = API.Areas.Admin.Models.Reviews.ReviewsService.GetListFeatured(4,Model.Item.Id);
+
+}
+
+<div class="navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-inline  nlist">
+                    <li>
+                        <a href="/">Trang chủ</a>
+                        <i class="fa fa-angle-right"></i>
+                        <a asp-controller="Reviews" asp-action="Index">Thông tin tư vấn</a>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+
+
+        <div class="col-lg-9 col-md-12 col-sm-12">
+            <div class="row PageDetail">
+
+                <div class="col-md-12 article-body">
+                    <div class="ContentArticle">
+                        <h1 class="Title">@(Model.Item.FullName) - @(Model.Item.Title)</h1>
+                    </div>
+                </div>
+
+                <div class="col-md-12 full-text article-content">
+                    @Html.Raw(Model.Item.Description)
+                </div>
+
+
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-12 mt-md-5 col-sm-12">
+            <!-- noi bat-->
+            @if (listHot != null || listHot.Count() > 0)
+            {
+                @for (int i = 0; i < listHot.Count(); i++)
+                {
+                    
+                    <div class="card sideCard mb-4">
+
+                        <a asp-controller="Reviews" asp-action="Detail" asp-route-id="@listHot[i].Id" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(listHot[i].FullName+"-"+listHot[i].Title)"> <img src="@listHot[i].Image" class="card-img-top" alt="@listHot[i].FullName - @listHot[i].Title "></a>
+                        <div class="card-body">
+                            <h5 class="card-title"><a asp-controller="Reviews" asp-action="Detail" asp-route-id="@listHot[i].Id" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(listHot[i].FullName+"-"+listHot[i].Title)">@listHot[i].FullName - @listHot[i].Title   </a></h5>
+                            <p class="card-text">@API.Models.StringUtilities.Truncate(@listHot[i].Introtext,250)</p>
+                            <a asp-controller="Reviews" asp-action="Detail" asp-route-id="@listHot[i].Id" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(listHot[i].FullName+"-"+listHot[i].Title)" class="btn btn-primary">Xem chi tiết</a>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+    </div>
+</div>
+
+

@@ -1,0 +1,35 @@
+﻿@using API.Areas.Admin.Models.Articles
+@using API.Areas.Admin.Models.CategoriesArticles
+@{
+  
+    API.Areas.Admin.Models.Articles.SearchArticles dto = new API.Areas.Admin.Models.Articles.SearchArticles() { CurrentPage = 1, ItemsPerPage = 6 };
+    var listNotification = API.Areas.Admin.Models.Articles.ArticlesService.GetListNotification(dto);
+}
+
+<!--Thông báo-->
+        <ul class="list-unstyled">
+            @for (int i = 0; i < listNotification.Count(); i++)
+            {
+                <li>
+                    <div class="notifi-item">
+                        <div class="date">
+                            @{
+                              var d =   @listNotification[i].PublishUp;
+                            }
+                                @d.Day <br /> <span>                                
+                                @d.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture)
+                            </span>
+                          
+                        </div>
+                        <a class="title" asp-controller="Articles" asp-action="Detail" asp-route-id="@listNotification[i].Id" asp-route-alias="@listNotification[i].Alias" title="@listNotification[i].Title">
+                            @listNotification[i].Title
+                        </a>
+                        <div class="clearfix"></div>
+                    </div>
+                    
+                </li>
+
+            }
+        </ul>
+
+

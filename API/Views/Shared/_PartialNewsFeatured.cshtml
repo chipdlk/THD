@@ -1,0 +1,88 @@
+﻿@model API.Models.PartialModel.PartialNewsFeatured
+@{
+    var listhot = API.Areas.Admin.Models.Articles.ArticlesService.GetListHot(1, 4);
+}
+<div class="row featuresDiv">
+    @if (listhot.Count > 0)
+    {
+        <div class="col-12 large">
+
+            <ul id="Features-Slide" class="gallery list-unstyled cS-hidden">
+                @for (int i = 0; i < listhot.Count(); i++)
+                {
+                    <li>
+                        <div class="img">
+                            <div class="khungAnh">
+                                <a asp-controller="Articles" asp-action="Detail" asp-route-id="@listhot[i].Id" asp-route-alias="@listhot[i].Alias" title="@listhot[i].Title" class="khungAnhCrop">
+                                    @if (listhot[i].Images == null || listhot[i].Images == "" || listhot[i].Images.ToLower() == "/cms/content/tintuc/")
+                                    {
+                                        <img src="~/images/noimage.gif" alt="@listhot[i].Title">
+                                    }
+                                    else
+                                    {
+                                        <img src="/Home/ResizeImage?url=@listhot[i].Images&width=600" title="@listhot[i].Title" />
+                                    }
+
+                                </a>
+                            </div>
+                        </div>
+
+                        <p class="title">
+                            <a asp-controller="Articles" asp-action="Detail" asp-route-id="@listhot[i].Id" asp-route-alias="@listhot[i].Alias" title="@listhot[i].Title">
+                                @listhot[i].Title
+                            </a>
+                        </p>
+                        @if (!string.IsNullOrEmpty(listhot[i].IntroText))
+                        {
+                        <p class="ovv">   @API.Models.StringUtilities.Truncate(listhot[i].IntroText, 250)  <a asp-controller="Articles" asp-action="Detail" asp-route-id="@listhot[i].Id" asp-route-alias="@listhot[i].Alias" title="@listhot[i].Title">Xem chi tiết ></a></p>
+                        }
+
+                    </li>
+                }
+            </ul>
+
+
+
+
+
+
+        </div>
+    }
+    @if (listhot.Count > 0)
+    {
+
+
+        @for (int i = 0; i < listhot.Count(); i++)
+        {
+            <div class="col-lg-3 col-sm-6 col-12 subfeatures-item">
+                <div class="khungAnh ">
+                    <a asp-controller="Articles" asp-action="Detail" asp-route-id="@listhot[i].Id" asp-route-alias="@listhot[i].Alias" title="@listhot[i].Title" class="khungAnhCrop">
+                        @if (listhot[i].Images == null || listhot[i].Images == "" || listhot[i].Images.ToLower() == "/cms/content/tintuc/")
+                        {
+                            <img src="~/images/noimage.gif" alt="@listhot[i].Title">
+                        }
+                        else
+                        {
+                            <img src="/Home/ResizeImage?url=@listhot[i].Images&width=600" title="@listhot[i].Title" />
+                        }
+
+                    </a>
+                </div>
+
+                <p class="date">@listhot[i].PublishUpShow </p>
+                <p class="title">
+                    <a asp-controller="Articles" asp-action="Detail" asp-route-id="@listhot[i].Id" asp-route-alias="@listhot[i].Alias" title="@listhot[i].Title">
+                      @API.Models.StringUtilities.Truncate(@listhot[i].Title,70)
+                    </a>
+                </p>
+            </div>
+
+        }
+
+
+    }
+
+
+</div>
+
+

@@ -1,0 +1,79 @@
+﻿@model API.Areas.Admin.Models.Reviews.ReviewsModel
+@{
+    ViewData["Title"] = "Thông tin tư vấn";
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+
+<div class="navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-inline  nlist">
+                    <li>
+                        <a href="/">Trang chủ</a>
+                        <i class="fa fa-angle-right"></i>
+                        <a asp-controller="Reviews" asp-action="Index">Thông tin tư vấn</a>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row itemTinTuc itemCamNhan">
+
+        @if (Model.ListItems == null || Model.ListItems.Count() == 0)
+        {
+            <div class="col-lg-12">
+                <p>Chưa có bài đăng</p>
+            </div>
+
+        }
+        else
+        {
+            for (int i = 0; i < Model.ListItems.Count(); i++)
+            {
+
+
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="item">
+                        <div class="khungAnh">
+                            <a class="khungAnhCrop" asp-controller="Reviews" asp-action="Detail" asp-route-id="@Model.ListItems[i].Id" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(@Model.ListItems[i].FullName+"-"+@Model.ListItems[i].Title)" title="@Model.ListItems[i].FullName">
+
+                                @if (Model.ListItems[i].Image == null || @Model.ListItems[i].Image == "")
+                                {
+                                    <img src="~/images/no-image.png" alt="@Model.ListItems[i].Title">
+                                }
+                                else
+                                {
+                                    <img alt="@Model.ListItems[i].FullName" class="tall" src="@Model.ListItems[i].Image">
+                                }
+                            </a>
+                        </div>
+                        <div class="outer">
+                            <a asp-controller="Reviews" asp-action="Detail" asp-route-id="@Model.ListItems[i].Id" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(@Model.ListItems[i].FullName+"-"+@Model.ListItems[i].Title)" class="name">@Model.ListItems[i].FullName</a>
+                            <div class="thongKe">
+                                @Model.ListItems[i].Title
+                            </div>
+                            <p class="info">@API.Models.StringUtilities.Truncate(@Model.ListItems[i].Introtext, 70)</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            @await Html.PartialAsync("_PartialPagination", Model.Pagination)
+        </div>
+
+    </div>
+
+</div>
+
+

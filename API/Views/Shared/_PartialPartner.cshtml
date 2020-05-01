@@ -1,0 +1,34 @@
+﻿@{ 
+    List<API.Areas.Admin.Models.CategoriesAblums.CategoriesAblums> ListItems = API.Areas.Admin.Models.CategoriesAblums.CategoriesAblumsService.GetListFeatured();
+}
+<!--section id="block-nopadding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="icon-lien-ket-dao-tao" ></div>
+            </div>
+        </div>
+    </div>
+</!--section-->
+
+<section id="block-partner">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                @if (ListItems != null && ListItems.Count() > 0) { 
+                <div class="owl-carousel owl-theme block-partner">
+                    @for (int i = 0; i < ListItems.Count(); i++)
+                    {
+                        <div class="item">
+                            <a href="/Albums.html#prettyPhoto[gallery_@ListItems[i].Id]/0">
+                                <img class="img-responsive" src="@ListItems[i].Images" title="@ListItems[i].Title" />
+                            </a>
+                        </div>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+

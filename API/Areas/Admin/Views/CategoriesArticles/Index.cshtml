@@ -1,0 +1,106 @@
+﻿@model API.Areas.Admin.Models.CategoriesArticles.CategoriesArticlesModel
+
+@{
+   Layout = "_layoutAdmin";
+    ViewData["Title"] = "Index";
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+
+    <div class="card">
+        <div class="card-header">
+
+            <h4><i class="fas fa-table"></i> Danh mục</h4>
+        </div>
+        <div class="card-body">
+            <partial name="_PartialMsgInfoAdmin" />
+
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <table class="table table-bordered table-striped table-hover ">
+                        <thead>
+                            <tr>
+                                <th width="50px" class="text-center">Id</th>
+                                <th width="50px" class="text-center">TT</th>
+                                <th>Tên danh mục</th>
+                                <th>Alias</th>
+                                <th width="100px" class="text-info text-center" data-toggle="tooltip" data-placement="top" title="Active">Active</th>
+                                <th width="100px" class="text-info" data-toggle="tooltip" data-placement="top" title="Hiển thị danh mục ra ngoài trang chủ">Trang chủ</th>
+                                <th width="130px" class="btn-contain">
+                                    <a asp-controller="@ControllerName" asp-action="SaveItem" class="btn btn-primary">THÊM MỚI</a>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (Model.ListItems == null || Model.ListItems.Count() == 0)
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center">
+                                        <div *ngIf="flagListitems==1" class="lds-dual-ring"></div>
+                                        <label *ngIf="flagListitems==2">Không có dữ liệu!</label>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                for (int i = 0; i < Model.ListItems.Count(); i++)
+                                {
+                                <tr>
+                                    <td width="50px" class="text-center">@Model.ListItems[i].Id</td>
+                                    <td width="50px" class="text-center">@Model.ListItems[i].Ordering</td>
+                                    <td>                  
+                                        <span class="@(Model.ListItems[i].Level==1?"text-primary":(Model.ListItems[i].Level==2?"text-danger":""))">
+                                            @Model.ListItems[i].Title 
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @Model.ListItems[i].Alias
+                                    </td>
+                                    <td class="text-center">
+                                        @if (@Model.ListItems[i].Status)
+                                        {
+                                            <span class="fas fa-check-circle text-primary" aria-hidden="true"></span>
+                                        }
+                                        else
+                                        {
+
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if (@Model.ListItems[i].FeaturedHome)
+                                        {
+                                            <span class="fas fa-check-circle text-success" aria-hidden="true"></span> <span class="text-muted small">(@Model.ListItems[i].Ordering)</span>
+                                        }
+                                        else
+                                        {
+
+                                        }
+                                    </td>
+                                    <td>
+                                       
+                                        <ul class="list-inline action">
+                                            <li class="list-inline-item"><a asp-controller="@ControllerName" asp-action="SaveItem" asp-route-id="@Model.ListItems[i].Ids"><i class="fa fa-edit"></i>Sửa</a></li>
+                                            @if (@Model.ListItems[i].NoDelete != true)
+                                            {
+                                                <li class="list-inline-item"><a data-toggle="modal" data-target="#DeleteModal" data-whatever="@Model.ListItems[i].Title" data-ids="@Model.ListItems[i].Ids"><i class="fa fa-trash"></i>Xóa</a></li>
+                                            }
+
+                                          
+                                        </ul>
+                                    </td>
+                                </tr>
+                                }
+                            }
+
+                        </tbody>
+
+                    </table>
+                    <form asp-controller="@ControllerName" asp-action="DeleteItem" id="AjaxDeleteForm"></form>
+                </div>
+                <div class="col-lg-12">
+                    @await Html.PartialAsync("_PartialPagination", Model.Pagination)
+                </div>
+            </div>
+        </div>
+    </div>

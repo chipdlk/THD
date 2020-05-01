@@ -1,0 +1,201 @@
+﻿@model API.Areas.Admin.Models.Products.ProductsModel
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = (Model.Item.Title);
+    ViewData["Description"] = (Model.Item.Metadesc);
+    ViewData["Keywords"] = (Model.Item.Metakey);
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+
+}
+
+
+
+<div class="navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-inline  nlist">
+                    <li>
+                        <a href="/">Trang chủ</a>
+                        @if (!Model.Item.StaticPage)
+                        {
+                            <i class="fa fa-angle-right"></i>
+                            <a asp-controller="Products" asp-action="Index" asp-route-id="@Model.Categories.Id" asp-route-alias="@Model.Categories.Alias">@(Model.Categories.Title)</a>
+                        }
+                        else
+                        {
+                            <i class="fa fa-angle-right"></i>
+                            @Model.Item.Title
+                        }
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="row ProductDetail">
+                <div class="col-lg-5 col-md-6 col-sm-12">
+                    <ul id="ProductGallery" class="gallery list-unstyled cS-hidden">
+                        <li data-thumb="/Home/ResizeImage?url=@Model.Item.Images&width=100&height=67">
+                            <img src="/Home/ResizeImage?url=@Model.Item.Images&width=600&height=400" />
+                        </li>
+                        @if (Model.Item.ListFile != null && Model.Item.ListFile.Count > 0)
+                        {
+                            @for (int j = 0; j < Model.Item.ListFile.Count(); j++)
+                            {
+                                <li data-thumb="/Home/ResizeImage?url=@Model.Item.ListFile[j].FilePath&width=100&height=67">
+                                    <img src="/Home/ResizeImage?url=@Model.Item.ListFile[j].FilePath&width=600&height=400" />
+                                </li>
+                            }
+                        }
+
+
+                    </ul>
+                </div>
+
+                <div class="col-lg-7 col-md-6 col-sm-12">
+                    <div class="row">
+                        <div class="col-md-12 article-body">
+                            <h1 class="ProductName">@(Model.Item.Title)</h1>
+                            <p class="price">
+                                @if (Model.Item.Price != null)
+                                {
+                                    <span> Giá: @string.Format("{0:#,##0}", @Model.Item.Price)</span>
+                                }
+                                else
+                                {
+                                    <span>Giá: liên hệ</span>
+                                }
+                            </p>
+                            <p class="ovv">
+                                @Model.Item.IntroText
+                            </p>
+                        </div>
+                        <div class="col-md-12">
+                            <ul class="list-inline">
+                                <li class="list-inline-item">
+                                    <input type="hidden" value="@Model.Item.Id" id="txtProductId" />
+                                    <input type="number" value="1" class="form-control" min="1" id="txtQuantity" />
+                                </li>
+                                <li class="list-inline-item">
+                                    <input type="button" class="btn btn-warning" value="@(Model.Item.CatId==1?"Đăng ký":"Đặt hàng")" id="btnAddcart" />
+                                </li>
+                            </ul>
+                            <div id="txtErr" class="mt-3"> </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-12">
+                    <h4 class="headTitle">Chi tiết @(Model.Item.CatId == 1 ? "dịch vụ" : "sản phẩm")</h4>
+                    <div class="FullText">
+                        @Html.Raw(Model.Item.FullText)
+                    </div>
+
+                </div>
+
+                @*Sản phẩm khác*@
+
+                <div class="col-12">
+                    <h4 class="headTitle">@(Model.Item.CatId == 1 ? "Dịch vụ khác" : "Sản phẩm khác") </h4>
+                </div>
+                <div class="col-12">
+                    @{ var ListProduct = Model.ListItems;}
+                    <div class="cat-item">
+                        <div class="body">
+                            <div class="row itemProduct">
+                                @for (int i = 0; i < ListProduct.Count(); i++)
+                                {
+                                    <div class="col-lg-3 col-md-3 col-sm-6 col-12">
+                                        <div class="item hotitem">
+                                            <div class="khungAnh">
+                                                <a class="khungAnhCrop" asp-controller="Products" asp-action="Detail" asp-route-id="@ListProduct[i].Id" asp-route-alias="@ListProduct[i].Alias" title="@ListProduct[i].Title">
+                                                    @if (ListProduct[i].Images == null || @ListProduct[i].Images == "" || ListProduct[i].Images.ToLower() == "/cms/content/tintuc/")
+                                                    {
+                                                        <img src="~/images/noimage.gif" alt="@ListProduct[i].Title" class="tall">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img alt="@ListProduct[i].Title" class="tall" src="/Home/ResizeImage?url=@ListProduct[i].Images&width=600">
+                                                    }
+                                                </a>
+                                            </div>
+
+                                            <p class="name">
+                                                <a asp-controller="Products" asp-action="Detail" asp-route-id="@ListProduct[i].Id" asp-route-alias="@ListProduct[i].Alias" title="@ListProduct[i].Title">
+                                                    @API.Models.StringUtilities.Truncate(@ListProduct[i].Title, 70)
+                                                </a>
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $(".viewFile").click(function () {
+            var url = $(this).attr("val");
+            $("#myFrame").attr("src", url);
+            $("#myFrame").show();
+
+
+        })
+
+        $('#ProductGallery').lightSlider({
+            gallery: true,
+            item: 1,
+            thumbItem: 9,
+            slideMargin: 0,
+            speed: 500,
+            auto: true,
+            loop: true,
+            onSliderLoad: function () {
+                $('#ProductGallery').removeClass('cS-hidden');
+            }
+        });
+
+        $("#btnAddcart").click(function () {
+
+            var ProductId = $("#txtProductId").val();
+            var Quantity = $("#txtQuantity").val();
+
+            if (Quantity == null || Quantity <= 0) {
+                $("#txtErr").html("<div class='alert alert-danger'>Vui lòng chọn số lượng !</div>");
+            }
+            else {
+
+                return $.ajax({
+                    type: "POST",
+                    url: "/ProductsOrder/AddCart?ProductId=" + ProductId + "&Quantity=" + Quantity,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        $("#txtErr").html("<div class='alert alert-success'>Thêm vào giỏ hàng thành công ! <a class='text-success' href='/ProductsOrder/'><i class='fas fa-shopping-cart mr-1 ml-2'></i>Xem giỏ hàng</a></div>");
+                    },
+                    error: function () {
+                        $("#txtErr").html("<div class='alert alert-danger'>Đã có lỗi xảy ra !</div>");
+                    }
+                });
+            }
+        })
+
+    })
+</script>

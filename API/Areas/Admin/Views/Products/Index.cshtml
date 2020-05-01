@@ -1,0 +1,157 @@
+﻿@model API.Areas.Admin.Models.Products.ProductsModel
+@using Microsoft.AspNetCore.Http
+
+@{
+    Layout = "_layoutAdmin";
+    ViewData["Title"] = "Quản lý Sản phẩm";
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+    int IdCoQuan = int.Parse(Context.Session.GetString("IdCoQuan"));
+    int IdGroup = int.Parse(Context.Session.GetString("IdGroup"));
+    string TenCoQuan = Context.Session.GetString("TenCoQuan");
+    string web = "VPUBND";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>
+            <i class="fas fa-table"></i> @ViewData["Title"]      
+            <span class="float-right">Tổng dòng: <strong>@if (Model.ListItems != null && Model.ListItems.Count() > 0){<span>@Model.ListItems[0].TotalRows</span>}else{<span>0</span>}</strong></span>
+        </h4>
+    </div>
+    <div class="card-body">
+        <partial name="_PartialMsgInfoAdmin" />
+        <form asp-controller="@ControllerName" asp-action="Index" method="get">
+            <div class="row">
+
+                <div class="col-lg-2">
+                    <div class="form-group">
+                        <label class="show-group-all show-group-@IdGroup">Danh mục</label>
+                        <select asp-for="SearchData.CatId" name="CatId" class="form-control" asp-items="Model.ListItemsDanhMuc"></select>
+                    </div>
+                </div>
+                <div class="col-lg-10">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="show-group-all show-group-@IdGroup">Từ khóa</label>
+                                <input asp-for="SearchData.Keyword" name="Keyword" placeholder="Tìm kiếm" class="form-control" />
+                            </div>
+                        </div>
+                      
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="show-group-all show-group-@IdGroup">&nbsp;&nbsp;</label>
+                                <button type="submit" class="btn btn-primary">Tìm Kiếm</button>
+                            
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                
+
+            </div>
+       
+        </form>
+        <div class="row">
+            <div class="col-lg-12">
+
+                <table class="table table-bordered table-striped table-hover ">
+                    <thead>
+                        <tr>
+                            <th width="50px" class="text-center">ID</th>
+                            <th>Tên</th>
+                            <th width="150px">Giá</th>
+                            <th width="150px">Danh mục</th>
+                            <th width="70px">Nổi Bật </th>
+                            <th width="80px">Hiển thị</th>   
+                            <th width="130px" class="btn-contain">
+                                <a asp-controller="@ControllerName" asp-action="SaveItem" class="btn btn-primary">THÊM MỚI</a>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model.ListItems == null || Model.ListItems.Count() == 0)
+                        {
+                            <tr>
+                                <td colspan="10" class="text-center">
+                                    <label *ngIf="flagListitems==2">Không có dữ liệu!</label>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            for (int i = 0; i < Model.ListItems.Count(); i++)
+                            {
+                            <tr>
+                                <td width="50px" class="text-center">@Model.ListItems[i].Id</td>
+                                <td>
+                                    <a>@Model.ListItems[i].Title</a><br />
+                                </td>
+                                <td>
+                                    @if (Model.ListItems[i].Price != null)
+                                    {
+                                        @string.Format("{0:#,##0}", @Model.ListItems[i].Price)
+                                    }
+                                </td>
+                                <td>@Model.ListItems[i].Category</td>
+
+                                <td class="text-center">
+                                    @if (@Model.ListItems[i].Featured)
+                                    {
+                                        <a onclick="UpdateFeatured('@ControllerName','@Model.ListItems[i].Ids',false)" class="fas fa-check-circle text-primary" aria-hidden="true"></a>
+                                    }
+                                    else
+                                    {
+                                        <a onclick="UpdateFeatured('@ControllerName','@Model.ListItems[i].Ids',true)" class="far fa-times-circle text-danger" aria-hidden="false"></a>
+                                    }
+                                </td>
+                               
+                                <td class="text-center">                                 
+                                        @if (@Model.ListItems[i].Status)
+                                        {
+                                            <a onclick="UpdateStatus('@ControllerName','@Model.ListItems[i].Ids',false)" class="fas fa-check text-primary" aria-hidden="true"></a>
+                                        }
+                                        else
+                                        {
+                                            <a onclick="UpdateStatus('@ControllerName','@Model.ListItems[i].Ids',true)" class="far fa-times-circle" aria-hidden="false"></a>
+                                        }                                 
+
+                                </td>
+                                                              
+                                <td>
+                                    <ul class="list-inline action">
+                                        <li class="list-inline-item"><a asp-controller="@ControllerName" asp-action="SaveItem" asp-route-id="@Model.ListItems[i].Ids"><i class="fa fa-edit"></i>Sửa</a></li>
+                                       
+                                            <li class="list-inline-item"><a data-toggle="modal" data-target="#DeleteModal" data-whatever="@Model.ListItems[i].Title" data-ids="@Model.ListItems[i].Ids"><i class="fa fa-trash"></i>Xóa</a></li>
+                                        
+
+                                    </ul>
+                                </td>
+                            </tr>
+                            }
+                        }
+
+                    </tbody>
+
+                </table>
+                <form asp-controller="@ControllerName" asp-action="DeleteItem" id="AjaxDeleteForm"></form>
+            </div>
+            <div class="col-lg-12">
+                @await Html.PartialAsync("_PartialPagination", Model.Pagination)
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script type="text/javascript" src="~/js/jquery.base64.min.js"></script>
+    <script type="text/javascript" src="~/js/jquery.binarytransport.js"></script>
+
+
+}

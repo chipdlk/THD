@@ -1,0 +1,148 @@
+﻿@model API.Areas.Admin.Models.Reviews.ReviewsModel
+@{
+    if (Model.Item.Id == 0)
+    {
+        ViewData["Title"] = "Thêm mới Review/Liên Kết";
+    }
+    else
+    {
+        ViewData["Title"] = "Cập nhật Review/Liên Kết";
+    }
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>@ViewData["Title"]</h4>
+    </div>
+    <div class="card-body">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <form asp-controller="@ControllerName" asp-action="SaveItem" method="post">
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="Item.FullName">Tên</label>
+                        <input type="text" class="form-control" asp-for="Item.FullName" name="FullName">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Title">Nghề nghiệp/Địa chỉ <sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control" asp-for="Item.Title" name="Title">
+                    </div>
+                </div>                
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Start">Sao</label>
+                        <select asp-for="Item.Start" name="CatId" class="form-control" asp-items="Model.ListStart"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label>Hình đại diện</label>
+                        <br />
+                        <img src="@Model.Item.Image" id="customRoxyImage" style="max-height:100px; margin-bottom:10px">
+                        <br />
+                        <br />
+                        <input type="hidden" id="Item_Images" class="form-control" asp-for="Item.Image" name="Image">
+                        <a href="javascript:openCustomRoxy()" type="button" class="btn">Chọn hình</a>
+                        <div id="roxyCustomPanel" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content content-set-image">
+                                    <iframe src="/lib/fileman/index.html?integration=custom&langCode=vi" style="width:100%;height:100%" frameborder="0"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Ngày Review</label>
+                                <div class="input-group date" id="ReviewDateShow" data-target-input="nearest">
+                                    <input type="text" asp-for="Item.ReviewDateShow" name="ReviewDateShow" class="form-control datetimepicker-input" data-target="#ReviewDateShow" id="ReviewDateShow" />
+                                    <div class="input-group-append" data-target="#ReviewDateShow" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">                              
+                                <label asp-for="Item.DisplayOder">Thứ tự hiển thị <sup class="text-danger"> (*)</sup></label>
+                                <input type="text" class="form-control" asp-for="Item.DisplayOder" name="DisplayOder">
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="col-4">
+                    <label class="control-label">&nbsp;</label>
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox custom-control-inline">
+                            <input asp-for="Item.Status" name="Status" class="custom-control-input" />
+                            <label class="custom-control-label" asp-for="Item.Status">Hiển thị</label>
+                        </div>
+                        <div class="custom-control custom-checkbox custom-control-inline">
+                            <input asp-for="Item.Featured" name="Featured" class="custom-control-input" />
+                            <label class="custom-control-label" asp-for="Item.Featured">Nổi bật</label>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label asp-for="Item.Introtext">Câu hỏi</label>
+                        <textarea asp-for="Item.Introtext" name="Introtext" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label asp-for="Item.Description">Trả lời</label>
+                        <textarea asp-for="Item.Description" id="NoiDung" name="Description" class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+            <input type="submit" class="btn btn-primary" name="SaveItem" value="Lưu" />
+            <a class="btn btn-danger" asp-controller="@ControllerName" asp-action="Index">Hủy</a>
+
+            <input type="hidden" class="form-control" asp-for="Item.Id" name="Id">
+            <input type="hidden" class="form-control" asp-for="Item.Ids" name="Ids">
+
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/lib/ckeditor/ckeditor.js"></script>
+    <script src="~/lib/ckeditor/adapters/jquery.js"></script>
+    <script src="~/js/moment.js"></script>
+    <script src="~/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script>
+
+        var roxyFileman = '/lib/fileman/index.html';
+        $(function () {
+            CKEDITOR.replace('NoiDung', {
+                filebrowserBrowseUrl: roxyFileman,
+                filebrowserImageBrowseUrl: roxyFileman + '?type=image',
+                removeDialogTabs: 'link:upload;image:upload'
+            });
+        });
+       
+        $(function () {
+
+                $('#ReviewDateShow').datetimepicker({
+                    format: 'DD/MM/YYYY',
+                });
+            });
+    </script>
+
+}

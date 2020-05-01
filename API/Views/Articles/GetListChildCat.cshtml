@@ -1,0 +1,159 @@
+﻿@model API.Areas.Admin.Models.Articles.ArticlesModel
+
+@{
+    Layout = "~/Views/Shared/_Layout_0.cshtml";
+    ViewData["Title"] = Model.Categories.Title;
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+    List<API.Areas.Admin.Models.Articles.Articles> ListArticles_DH = API.Areas.Admin.Models.Articles.ArticlesService.GetListNew(13,5,1);
+    List<API.Areas.Admin.Models.Articles.Articles> ListArticles_LT = API.Areas.Admin.Models.Articles.ArticlesService.GetListNew(14,5,1);
+    List<API.Areas.Admin.Models.Articles.Articles> ListArticles_15 = API.Areas.Admin.Models.Articles.ArticlesService.GetListNew(15,5,1);
+    List<API.Areas.Admin.Models.Articles.Articles> ListArticles_16 = API.Areas.Admin.Models.Articles.ArticlesService.GetListNew(16,5,1);
+}
+<section id="block-view-1" style="margin-top: 0px;">
+    <div class="container">
+
+        <div class="row">
+            <div class="title_main_large">
+                <h2 class="h2"><a asp-controller="Articles" asp-action="GetListChildCat" asp-route-id="13" asp-route-alias="dai-hoc" title="Đại học">Đại học</a></h2>
+            </div>
+       
+                @if (ListArticles_DH != null && ListArticles_DH.Count() > 0) {
+                    for (int i = 0; i < 3; i++) { 
+
+                        <div class="col-12 col-sm-4 col-md-4 col-lg-4" itemscope="" itemtype="https://schema.org/Article">
+                            <div class="card">
+                                <a href="#" itemprop="url">
+                                    <img class="img-fluid" src="~/CMS/Content/TuyenSinh/dai-hoc.jpg" title="#" alt="#" />
+                                </a>
+                                <div class="card-body">
+                                    <a href="#" itemprop="url">
+                                        <h3 class="title" itemprop="name"> thông báo tuyển sinh thạc sĩ ngành luật học - trường đh luật hà nội năm 2019 </h3>
+                                    </a>
+                                    <p>
+                                        Trên cơ sở nội dung trong thông báo tuyển sinh của khoa luật. Kính đề nghị quý trường ra thông báo chi tiết phát hành rộng rãi đến đối tượng người học
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                }
+
+        </div>
+    </div>
+</section>
+
+
+<section id="block-view-1-2">
+    <div class="container">
+
+        <div class="row">
+            <div class="title_main_large">
+                <h2 class="h2"><a asp-controller="Articles" asp-action="GetListChildCat" asp-route-id="14" asp-route-alias="lien-thong" title="Liên thông">Liên thông</a></h2>
+            </div>
+
+            @if (ListArticles_DH != null && ListArticles_DH.Count() > 0)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+
+                <div class="col-12 col-sm-4 col-md-4 col-lg-4" itemscope="" itemtype="https://schema.org/Article">
+                    <div class="card" >
+                        <a href="#" itemprop="url">
+                            <img class="img-fluid" src="~/CMS/Content/TuyenSinh/dai-hoc.jpg" title="#" alt="#" />
+                        </a>
+                        <div class="card-body">
+                            <a href="#" itemprop="url">
+                                <h3 class="title" itemprop="name"> thông báo tuyển sinh thạc sĩ ngành luật học - trường đh luật hà nội năm 2019 </h3>
+                            </a>
+                            <p>
+                                Trên cơ sở nội dung trong thông báo tuyển sinh của khoa luật. Kính đề nghị quý trường ra thông báo chi tiết phát hành rộng rãi đến đối tượng người học
+                            </p>
+                        </div>
+                    </div>
+                  
+
+
+                </div>
+                }
+            }
+
+        </div>
+    </div>
+</section>
+
+<section id="block-view-1">
+    <div class="container">
+
+        <div class="row">
+            <div class="title_main_large">
+                <h2 class="h2"><a asp-controller="Articles" asp-action="GetListChildCat" asp-route-id="14" asp-route-alias="lien-thong" title="Liên thông">SAU ĐẠI HỌC</a></h2>
+            </div>
+
+            @if (ListArticles_DH != null && ListArticles_DH.Count() > 0)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+
+                    <div class="col-12 col-sm-4 col-md-4 col-lg-4" itemscope="" itemtype="https://schema.org/Article">
+                        <div class="card">
+                            <a href="#" itemprop="url">
+                                <img class="img-fluid" src="~/CMS/Content/TuyenSinh/dai-hoc.jpg" title="#" alt="#" />
+                            </a>
+                            <div class="card-body">
+                                <a href="#" itemprop="url">
+                                    <h3 class="title" itemprop="name"> thông báo tuyển sinh thạc sĩ ngành luật học - trường đh luật hà nội năm 2019 </h3>
+                                </a>
+                                <p>
+                                    Trên cơ sở nội dung trong thông báo tuyển sinh của khoa luật. Kính đề nghị quý trường ra thông báo chi tiết phát hành rộng rãi đến đối tượng người học
+                                </p>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+</section>
+
+<section id="block-view-1-2">
+    <div class="container">
+
+        <div class="row">
+            <div class="title_main_large">
+                <h2 class="h2"><a asp-controller="Articles" asp-action="GetListChildCat" asp-route-id="14" asp-route-alias="lien-thong" title="Liên thông">CÁC CHƯƠNG TRÌNH LIÊN KẾT ĐÀO TẠO</a></h2>
+            </div>
+
+            @if (ListArticles_DH != null && ListArticles_DH.Count() > 0)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+
+                    <div class="col-12 col-sm-4 col-md-4 col-lg-4" itemscope="" itemtype="https://schema.org/Article">
+                        <div class="card">
+                            <a href="#" itemprop="url">
+                                <img class="img-fluid" src="~/CMS/Content/TuyenSinh/dai-hoc.jpg" title="#" alt="#" />
+                            </a>
+                            <div class="card-body">
+                                <a href="#" itemprop="url">
+                                    <h3 class="title" itemprop="name"> thông báo tuyển sinh thạc sĩ ngành luật học - trường đh luật hà nội năm 2019 </h3>
+                                </a>
+                                <p>
+                                    Trên cơ sở nội dung trong thông báo tuyển sinh của khoa luật. Kính đề nghị quý trường ra thông báo chi tiết phát hành rộng rãi đến đối tượng người học
+                                </p>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+</section>

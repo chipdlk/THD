@@ -1,0 +1,163 @@
+﻿@model API.Areas.Admin.Models.USUsers.USUsersModel
+@using Microsoft.AspNetCore.Http
+@{
+    Layout = "_layoutAdmin";
+    ViewData["Title"] = "Quản lý Người dùng";
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+    int IdUser = int.Parse(Context.Session.GetString("IdUser"));
+}
+
+<div class="card">
+    <div class="card-header">
+
+        <h4><i class="fas fa-table"></i> @ViewData["Title"]</h4>
+    </div>
+    <div class="card-body">
+        <partial name="_PartialMsgInfoAdmin" />
+
+        <div class="row">
+
+            <div class="col-lg-12">
+
+                <table class="table table-bordered table-striped table-hover ">
+                    <thead>
+                        <tr>
+                            <th width="50px" class="text-center">STT</th>
+                            <th>Tài khoản</th>
+                            <th width="200px">Tên</th>
+                            <th width="200px">Cơ Quan</th>
+                            <th width="100px">Trạng Thái</th>
+                            <th>Quyền Hạn</th>
+                            <th width="100px" class="text-center text-info" data-toggle="tooltip" data-placement="top" title="Mật khẩu mặc định là: Abc@123">Mật Khẩu</th>
+                            <th width="130px" class="btn-contain">
+                                <a asp-controller="@ControllerName" asp-action="SaveItem" class="btn btn-primary">THÊM MỚI</a>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model.ListItems == null || Model.ListItems.Count() == 0)
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center">                                    
+                                    <label>Không có dữ liệu!</label>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            for (int i = 0; i < Model.ListItems.Count(); i++)
+                            {
+                                @if (Model.ListItems[i].Id > 1)
+                                {
+                                    <tr>
+                                        <td width="50px" class="text-center">@(i + 1)</td>
+                                        <td>@Model.ListItems[i].UserName</td>
+                                        <td>@Model.ListItems[i].FullName</td>
+                                        <td>@Model.ListItems[i].TenCoQuan</td>
+                                        <td class="text-center">
+                                            @if (@Model.ListItems[i].Status == 1)
+                                            {
+                                                <span class="fas fa-check-circle text-primary" aria-hidden="true"></span>
+                                            }
+                                            else if (@Model.ListItems[i].Status == 2)
+                                            {
+                                                <span class="fas fa-lock" aria-hidden="false"></span>
+                                                
+                                            }
+                                            else {
+                                        <span class="far fa-times-circle" aria-hidden="false"></span>
+                                            }
+                                        </td>
+                                        <td>@Model.ListItems[i].GroupsTitle</td>
+                                        <td>
+                                            <ul class="list-inline action">
+                                                <li class="list-inline-item"><a data-toggle="modal" data-target="#RessetPasswordModal" data-whatever="@Model.ListItems[i].UserName" data-ids="@Model.ListItems[i].Ids"><i class="fas fa-unlock-alt"></i> Phục hồi</a></li>
+                                            </ul>
+
+                                        </td>
+                                        <td>
+                                            <ul class="list-inline action">
+                                                <li class="list-inline-item"><a asp-controller="@ControllerName" asp-action="SaveItem" asp-route-id="@Model.ListItems[i].Ids"><i class="fa fa-edit"></i>Sửa</a></li>
+
+                                                @if (IdUser != Model.ListItems[i].Id)
+                                                {
+                                                    <li class="list-inline-item"><a data-toggle="modal" data-target="#DeleteModal" data-whatever="@Model.ListItems[i].UserName" data-ids="@Model.ListItems[i].Ids"><i class="fa fa-trash"></i>Xóa</a></li>
+                                                }
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+
+                    </tbody>
+
+                </table>
+                <form asp-controller="@ControllerName" asp-action="DeleteItem" id="AjaxDeleteForm"></form>
+            </div>
+            <div class="col-lg-12">
+                @await Html.PartialAsync("_PartialPagination", Model.Pagination)
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="RessetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <p id="reset-title">Bạn có chắc chắn thiết lập lại mật khẩu ?</p>
+                <button class="btn btn-warning" data-ids="" id="ResetPasswordItemTrue">Cập nhật mật khẩu</button>
+                <button class="btn btn-danger" data-dismiss="modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+    jQuery('#RessetPasswordModal').on('show.bs.modal', function (event) {
+        var button = jQuery(event.relatedTarget); // Button that triggered the modal
+        var recipient = button.data('whatever'); // Extract info from data-* attributes
+        var ids = button.data('ids');
+        var modal = jQuery(this);
+        jQuery("#ResetPasswordItemTrue").attr("data-ids", ids);
+        modal.find('#reset-title').html('Bạn có chắc chắn thiết lập lại mật khẩu <strong>' + recipient + '</strong>?')
+    });
+
+    jQuery('#RessetPasswordModal').on('hide.bs.modal', function (event) {
+        console.log("hide.bs.modal");
+        $('#reset-title').html('Bạn có chắc chắn thiết lập lại mật khẩu ?')
+    });
+
+
+
+$("#ResetPasswordItemTrue").click(function () {
+    //var url = "/Admin/@ControllerName/";
+    var form = $('#AjaxDeleteForm');
+    var token = jQuery('input[name="__RequestVerificationToken"]', form).val();
+    var ids = jQuery("#ResetPasswordItemTrue").attr("data-ids");
+    var url = "/Admin/USUsers/RessetPassword?Id="+ids;
+    var headers = {};
+    headers["RequestVerificationToken"] = token;
+    return $.ajax({
+        type: "POST",
+        url: url,
+        headers: headers,
+        data: JSON.stringify({ "Ids": ids }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            $("#reset-title").html(data.Msg);
+            console.log(data);
+            //window.location.reload();
+        },
+        error: function () {
+            $("#reset-title").html(data.Msg);
+        }
+    });
+});
+    </script>
+}

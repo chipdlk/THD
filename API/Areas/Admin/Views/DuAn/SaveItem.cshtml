@@ -1,0 +1,173 @@
+﻿@model API.Areas.Admin.Models.DuAn.DuAnModel
+@{
+    if (Model.Item.Id == 0)
+    {
+        ViewData["Title"] = "Thêm mới CSDL KHCN";
+    }
+    else
+    {
+        ViewData["Title"] = "Cập nhật CSDL KHCN";
+    }
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>Chi tiết Văn bản</h4>
+    </div>
+    <div class="card-body">
+        <partial name="_PartialMsgInfoAdmin" />
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <form asp-controller="@ControllerName" asp-action="SaveItem" method="post">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Ten">Tên đề tài/dự án <sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control Changetitle namepr" asp-for="Item.Ten" name="Ten">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="Item.KetQuaThucHien">Tổ chức chủ trì<sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control" asp-for="Item.KetQuaThucHien" name="KetQuaThucHien">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="Item.ChuNhiem">Chủ nhiệm<sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control" asp-for="Item.ChuNhiem" name="ChuNhiem">
+                    </div>
+                </div>
+              
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Loai">Loại <sup class="text-danger"> (*)</sup></label>
+                        <select asp-for="Item.Loai" name="Loai" class="form-control" asp-items="Model.ListItemsLoai"></select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="Item.TrangThai">Trạng thái <sup class="text-danger"> (*)</sup></label>
+                        <select asp-for="Item.TrangThai" name="TrangThai" class="form-control" asp-items="Model.ListItemsTrangThai"></select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <label asp-for="Item.FileKetQua">File Văn bản <sup class="text-danger"> (*)</sup></label>
+                    <div class="input-group mb-3">
+                        <input type="text" id="Item_Images" class="form-control" asp-for="Item.FileKetQua" name="FileKetQua">
+
+                        <div class="input-group-prepend">
+                            <a href="javascript:openCustomRoxy()" class="btn btn-primary">Chọn File</a>
+                        </div>
+                    </div>
+                    <div id="roxyCustomPanel" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content content-set-image">
+                                <iframe src="/lib/fileman/index.html?integration=custom&langCode=vi" style="width:100%;height:100%" frameborder="0"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                    @*@if(!string.IsNullOrEmpty(Model.Item.FileKetQua))
+                    {
+                    <a href="@Model.Item.FileKetQua" target="_blank">@Model.Item.FileKetQua</a>
+                    }*@
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="Item.LinhVuc">Lĩnh vực <sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control" asp-for="Item.LinhVuc" name="LinhVuc">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="Item.PhuongPhap">Phương pháp<sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control" asp-for="Item.PhuongPhap" name="PhuongPhap">
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="Item.KinhPhi">Kinh phí<sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control" asp-for="Item.KinhPhi" name="KinhPhi">
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label asp-for="Item.MucTieu">Mục tiêu</label>
+                        <textarea asp-for="Item.MucTieu" name="MucTieu" class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="Item.ThoiGianBatDauShow">Thời gian bắt đầu <sup class="text-danger"> (*)</sup></label>
+                        <div class="input-group date" id="ThoiGianBatDauShow" data-target-input="nearest">
+                            <input type="text" asp-for="Item.ThoiGianBatDauShow" name="ThoiGianBatDauShow" class="form-control datetimepicker-input" data-target="#ThoiGianBatDauShow" />
+                            <div class="input-group-append" data-target="#ThoiGianBatDauShow" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="Item.ThoiGianKetThucShow">Thời gian kết thúc</label>
+                        <div class="input-group date" id="ThoiGianKetThucShow" data-target-input="nearest">
+                            <input type="text" asp-for="Item.ThoiGianKetThucShow" name="ThoiGianKetThucShow" class="form-control datetimepicker-input" data-target="#ThoiGianKetThucShow" />
+                            <div class="input-group-append" data-target="#ThoiGianKetThucShow" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Status"> &nbsp; &ensp; &ensp;</label>
+                        <div class="custom-control custom-checkbox custom-control">
+                            <input asp-for="Item.Status" name="Status" class="custom-control-input" />
+                            <label class="custom-control-label" asp-for="Item.Status">Hiển thị</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                        
+
+           
+            <!--div class="form-group">
+        <label asp-for="Item.FullText">Nội Dung</label>
+        <textarea asp-for="Item.FullText" name="FullText" class="form-control"></textarea>
+    </!--div-->
+
+            <input type="submit" class="btn btn-primary" name="SaveItem" value="Lưu" />
+            <a class="btn btn-danger" asp-controller="@ControllerName" asp-action="Index">Hủy</a>
+            <input type="hidden" class="form-control" asp-for="Item.Id" name="Id">
+            <input type="hidden" class="form-control" asp-for="Item.Ids" name="Ids">
+
+        </form>
+    </div>
+</div>
+
+<script src="~/js/moment.js"></script>
+<script src="~/js/tempusdominus-bootstrap-4.min.js"></script>
+<script type="text/javascript" src="~/js/jquery.base64.min.js"></script>
+<script type="text/javascript" src="~/js/jquery.binarytransport.js"></script>
+
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $('#ThoiGianBatDauShow').datetimepicker({ format: 'DD/MM/YYYY', });
+        $('#ThoiGianKetThucShow').datetimepicker({ format: 'DD/MM/YYYY', });
+    });
+</script>

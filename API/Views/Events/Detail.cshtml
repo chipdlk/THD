@@ -1,0 +1,174 @@
+﻿@model API.Areas.Admin.Models.Events.EventsModel
+@using Microsoft.Extensions.Options
+@using reCAPTCHA.AspNetCore
+
+
+@inject IOptions<RecaptchaSettings> RecaptchaSettings
+@{
+    ViewData["Title"] = Model.Item.Title;
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+
+<link rel="stylesheet" href="~/css/tempusdominus-bootstrap-4.css" />
+
+<div class="navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-inline  nlist">
+                    <li>
+                        <a href="/">Trang chủ</a>
+
+                        <i class="fa fa-angle-right"></i>
+                        <a asp-controller="Events" asp-action="Index">Chương trình khám</a>
+                        <i class="fa fa-angle-right"></i>
+                        <a >@Model.Item.Title</a>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container">
+    <div class="row">
+
+
+
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12">
+
+                    <img class="mb-4" src="@Model.Item.Image" alt="@Model.Item.Title">
+                    <h5 class="mb-4"><strong>@Model.Item.Title</strong> </h5>
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <div class="thongKe-lg">
+                                <i class="far fa-clock"></i> Ngày kết thúc: @Model.Item.DateExpiredShow
+                            </div>
+                        </li>
+                        <li class="list-inline-item ml-4">
+                            <div class="thongKe-lg">
+                                <i class="fas fa-users"></i>Đã đăng ký: @Model.Item.NumberRegist
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-12 mb-4">
+                    <div class="greyText">
+                        @Html.Raw(Model.Item.Description)
+                    </div>
+
+                </div>
+                <hr />
+            </div>
+            <div class="row">
+
+
+                <div class="col-lg-12">
+                    <div class="white-box mb-4">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <partial name="_PartialMsgInfo" />
+                        <form asp-controller="@ControllerName" asp-action="Detail" method="post">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label asp-for="myContact.Item.Fullname">Họ Tên <sup class="text-danger"> (*)</sup></label>
+                                        <input type="text" class="form-control" asp-for="myContact.Item.Fullname" name="Fullname">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label asp-for="myContact.Item.Phone">Điện Thoại</label>
+                                        <input type="text" class="form-control" asp-for="myContact.Item.Phone" name="Phone">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label asp-for="myContact.Item.Address">Địa Chỉ</label>
+                                        <input type="text" class="form-control" asp-for="myContact.Item.Address" name="Address">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label asp-for="myContact.Item.Email">Email</label>
+                                        <input type="text" class="form-control" asp-for="myContact.Item.Email" name="Email">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label asp-for="myContact.Item.Title">Tiêu đề <sup class="text-danger"> (*)</sup></label>
+                                        <input type="text" asp-for="myContact.Item.Title" name="Title" class="form-control" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>Thời gian hẹn khám<sup class="text-danger"> (*)</sup></label>
+                                        <div class="input-group date" id="CreatedDate" data-target-input="nearest">
+                                            <input type="text" asp-for="myContact.Item.CreatedDate" name="CreatedDate" class="form-control datetimepicker-input" data-target="#CreatedDate" id="CreatedDate" />
+                                            <div class="input-group-append" data-target="#CreatedDate" data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label asp-for="myContact.Item.Introtext">Nội dung <sup class="text-danger"> (*)</sup></label>
+                                        <textarea asp-for="myContact.Item.Introtext" name="Introtext" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-8 col-12">
+                                    <div class="form-group">
+                                        @Html.Recaptcha(RecaptchaSettings?.Value)
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-12 text-right">
+                                    <input type="submit" class="btn btn-primary" name="SaveItem" value="Gửi thông tin" />
+                                    <a class="btn btn-danger" asp-controller="Home" asp-action="Index">Thoát</a>
+                                </div>
+                            </div>
+                            <input type="hidden" class="form-control" asp-for="myContact.Item.EventId" name="EventId">
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+<script src="~/js/moment.js"></script>
+<script src="~/js/tempusdominus-bootstrap-4.min.js"></script>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $('#CreatedDate').datetimepicker({
+            format: 'DD/MM/YYYY HH:mm',
+        });
+    });
+</script>
+}

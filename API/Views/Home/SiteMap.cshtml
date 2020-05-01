@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewData["Title"] = "SiteMap";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<API.Areas.Admin.Models.Menus.Menus> ListItems = API.Areas.Admin.Models.Menus.MenusService.GetList();
+}
+
+<div class="navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-inline  nlist">
+                    <li>
+                        <a href="/">Trang chủ</a>
+                        <i class="fa fa-angle-right"></i>
+                        Sơ đồ website
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row PageDetail PageDetail">
+        <div class="col-md-12">
+
+            @if (ListItems != null && ListItems.Count() > 0)
+            {
+            <ul class="sitemap">
+              
+                        @for (int i = 0; i < ListItems.Count(); i++)
+                        {
+                            <li><a href="@ListItems[i].Link">@ListItems[i].Title</a></li>
+                        }
+            </ul>
+            }
+
+        </div>
+
+     
+    </div>
+
+</div>

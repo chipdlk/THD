@@ -1,0 +1,102 @@
+﻿@using API.Areas.Admin.Models.Articles
+@using API.Areas.Admin.Models.CategoriesArticles
+@{
+    var listhot = API.Areas.Admin.Models.Articles.ArticlesService.GetListHot(1, 8);
+
+    List<SelectListItem> listLink = API.Areas.Admin.Models.Banners.BannersService.GetListItemsByCat(2);
+    var listBannerPo4 = API.Areas.Admin.Models.Banners.BannersService.GetListByCat(4);
+    var listBannerPo5 = API.Areas.Admin.Models.Banners.BannersService.GetListByCat(5);
+}
+
+
+<!--Banner-->
+@foreach (var item in listBannerPo4)
+{
+    <div class="BannerItem">
+        <a href="@item.Link" target="@item.Target">
+            <img src="@item.Image" alt="@item.Title" />
+        </a>
+    </div>
+}
+
+<!--Video-->
+<partial name="_PartialVideo" />
+
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.AnPhamItem').each(function (index, value) {
+            var apItem = $(this);
+            var CatId = $(this).attr('val');
+            return $.ajax({
+                type: "GET",
+                url: "/Articles/GetListByCatSimple?CatId=" + CatId,
+                //data: JSON.stringify({ CatId: CatId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        var url = "#";
+                        if (data[i].ListFile.length > 0) {
+                            url = data[i].ListFile[0].FilePath;
+                        }
+                        apItem.append("<li><a href='" + url + "' target='_blank'>" + data[i].Title + "</a></li>");
+                    }
+
+                },
+                error: function () {
+
+                }
+            });
+        });
+    });
+</script>
+
+
+
+<!--Banner-->
+@foreach (var item in listBannerPo5)
+{
+    <div class="BannerItem">
+        <a href="@item.Link" target="@item.Target">
+            <img src="@item.Image" alt="@item.Title" />
+        </a>
+    </div>
+}
+
+<!--Liên kết  website-->
+<div class="box">
+    <div class="header">
+        <i class="fas fa-link- mr-1 blueicon"></i> Liên kết  website
+    </div>
+    <div class="body">
+        <select name="BannerId" id="BannerId" class="form-control" asp-items="listLink"></select>
+    </div>
+</div>
+
+
+<!--Thống kê truy cập-->
+<div class="box">
+    <div class="header">
+        <i class="fas fa-users mr-1 blueicon"></i> Thống kê truy cập
+    </div>
+    <div class="body">
+        <div class="tktc">
+            <p>Hôm nay: <span id="SiteVisit_DateNow">0</span></p>
+            <p>Hôm qua: <span id="SiteVisit_Yesterday">0</span></p>
+            <p>Trong tuần: <span id="SiteVisit_DateOfWeek">0</span></p>
+            <p>Tất cả: <span id="SiteVisit_Total">0</span></p>
+        </div>
+    </div>
+</div>
+
+<div style="margin-bottom:10px" class="myiframe">
+    <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fdaklak.startup.vn%2F&amp;tabs=timeline&amp;width=360&amp;height=600&amp;small_header=false&amp;adapt_container_width=true&amp;hide_cover=false&amp;show_facepile=false&amp;appId=137476539682465" style="border:none;" scrolling="no" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+</div>
+
+<div style="margin-bottom:10px" class="myiframe">
+    <iframe style="border: none; overflow: hidden;" src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fybadlk%2F&amp;tabs=timeline&amp;width=380&amp;height=450&amp;small_header=false&amp;adapt_container_width=true&amp;hide_cover=false&amp;show_facepile=false&amp;appId=137476539682465" frameborder="0" scrolling="no"></iframe>
+</div>

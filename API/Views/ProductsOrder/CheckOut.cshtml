@@ -1,0 +1,143 @@
+﻿@model API.Areas.Admin.Models.ProductsOrder.ProductsOrderModel
+@using Microsoft.Extensions.Options
+@using reCAPTCHA.AspNetCore
+@using Microsoft.AspNetCore.Http
+@inject IOptions<RecaptchaSettings> RecaptchaSettings
+@{
+    ViewData["Title"] = "Đặt hàng";
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+    var chk = int.Parse(TempData["CART"].ToString());
+}
+
+<div class="navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-inline  nlist">
+                    <li>
+                        <a href="/">Trang chủ</a>
+                        <i class="fa fa-angle-right"></i>
+                        <a asp-controller="Contacs" asp-action="Index">Đặt hàng</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+
+    @if (chk==1)
+    {
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-12">
+                <h5 class="myHead"><strong>Thông tin đơn hàng</strong></h5>
+                <table class="table table-bordered ProductsOrderTbl small">
+                    <tbody>
+                        @{decimal total = 0; }
+                        @foreach (var item in Model.ListDetail)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-controller="Products" asp-action="Detail" asp-route-id="@item.ProductId" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(item.Name)" title="@item.Name">
+                                        @item.Name
+                                    </a><span class="text-danger">(x@(item.Quantity))</span>
+                                </td>
+                                <td class="text-right">
+                                    @string.Format("{0:#,##0}", item.Price * item.Quantity)
+                                </td>
+                            </tr>
+                            total = total + (decimal)(item.Quantity * item.Price);
+                        }
+                        <tr>
+                            <td><strong>Tổng đơn hàng:</strong> </td>
+                            <td>
+                                <strong><span>@string.Format("{0:#,##0}", total)</span></strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-9 col-md-8 col-sm-12">
+                <h5 class="myHead"><strong>Thông tin khách hàng </strong></h5>
+                <div class="row">
+
+                    <div class="col-lg-12">
+                        <div class="white-box mb-4" style="border:1px solid #ddd; padding:10px;">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <partial name="_PartialMsgInfo" />
+                            <form asp-controller="@ControllerName" asp-action="CheckOut" method="post">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label asp-for="Item.Name">Họ Tên <sup class="text-danger"> (*)</sup></label>
+                                            <input type="text" class="form-control" asp-for="Item.Name" name="Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label asp-for="Item.Phone">Điện Thoại <sup class="text-danger"> (*)</sup></label>
+                                            <input type="text" class="form-control" asp-for="Item.Phone" name="Phone">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label asp-for="Item.Address">Địa Chỉ <sup class="text-danger"> (*)</sup></label>
+                                            <input type="text" class="form-control" asp-for="Item.Address" name="Address">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label asp-for="Item.Email">Email</label>
+                                            <input type="email" class="form-control" asp-for="Item.Email" name="Email">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label asp-for="Item.Description">Ghi chú</label>
+                                            <textarea asp-for="Item.Description" name="Description" class="form-control"></textarea>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-8 col-12">
+                                        <div class="form-group">
+                                            @Html.Recaptcha(RecaptchaSettings?.Value)
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-12 text-right">
+                                        <input type="submit" class="btn btn-primary" name="SaveItem" value="Đặt hàng" />
+                                        <a class="btn btn-danger" asp-controller="Home" asp-action="Index">Thoát</a>
+                                    </div>
+                                </div>
+                                <input type="hidden" class="form-control" asp-for="Item.Id" value="0" name="Id">
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-12">
+                <partial name="_PartialMsgInfo" />
+            </div>
+            <div class="col-12 text-center mt-3 mb-5">
+                <a asp-controller="Home" asp-action="Index"  class="btn btn-lg btn-success">
+                   Quay về trang chủ
+                </a>
+            </div>
+        </div>
+    }
+</div>

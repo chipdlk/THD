@@ -1,0 +1,249 @@
+﻿@model API.Areas.Admin.Models.DMCoQuan.DMCoQuanModel
+@{
+    if (Model.Item.IdLayout > 0)
+    {
+        Layout = "_Layout_"+Model.Item.IdLayout.ToString();
+    }
+    else
+    {
+        Layout = "_Layout";
+    }
+    ViewData["Title"] = Model.Item.Title + " - ĐH Buôn Ma Thuột";
+    ViewData["IdCoQuan"] = Model.Item.Id;
+    ViewData["Title_1"] = Model.Item.Title_1;
+    ViewData["Title_2"] = Model.Item.Title_2;
+    ViewData["Title_3"] = Model.Item.Title_3 ;
+    
+}
+
+@{    
+    List<API.Areas.Admin.Models.Articles.Articles> ListArticlesNew_1 = API.Areas.Admin.Models.Articles.ArticlesService.GetListNew(2,5,Model.Item.Id);
+    List<API.Areas.Admin.Models.Articles.Articles> ListArticlesNew_3 = API.Areas.Admin.Models.Articles.ArticlesService.GetListNew(12,5,Model.Item.Id);
+    List<API.Areas.Admin.Models.Articles.Articles> ListArticlesNew_4 = API.Areas.Admin.Models.Articles.ArticlesService.GetListNew(8,5,Model.Item.Id);
+
+    List<API.Areas.Admin.Models.Articles.Articles> ListArticlesHot = API.Areas.Admin.Models.Articles.ArticlesService.GetListHot(Model.Item.Id);
+    List<API.Areas.Admin.Models.Articles.Articles> ListArticlesHotRoot = API.Areas.Admin.Models.Articles.ArticlesService.GetListHot(1);
+    int HotList = 4;
+    if (ListArticlesHot != null && ListArticlesHot.Count() < 4)
+    {
+        HotList = ListArticlesHot.Count();
+    }
+    List<API.Areas.Admin.Models.CategoriesArticles.CategoriesArticles> ListCatChild = API.Areas.Admin.Models.CategoriesArticles.CategoriesArticlesService.GetListChild(4);
+}
+@if (ListCatChild != null && ListCatChild.Count() > 0 && (Model.Item.Id==19)) {
+    <section id="list-cat-child">
+        <div class="container">
+            <div class="row">
+                @for (int i = 0; i < ListCatChild.Count(); i++) {
+                <div class="col-lg-3 col-md-4 col-sm-6 col-12 box-hover">
+                    <div class="hover ehover4 my-hover-@ListCatChild[i].Id">
+                        <img class="img-fluid" src="@ListCatChild[i].Images" alt="@ListCatChild[i].Title">
+                        <div class="overlay">
+                            <h2>@ListCatChild[i].Title</h2>
+                            <a asp-controller="Articles" asp-action="GetByCat" asp-route-id="@ListCatChild[i].Id" asp-route-alias="@ListCatChild[i].Alias" title="@ListCatChild[i].Title" class="info">Chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+@if (Model.Item.Id == 12) { 
+    List<API.Areas.Admin.Models.Articles.Articles> ListLichThi = API.Areas.Admin.Models.Articles.ArticlesService.GetListNew(19,5,Model.Item.Id);
+    List<API.Areas.Admin.Models.Articles.Articles> ListDanhSachPhongThi = API.Areas.Admin.Models.Articles.ArticlesService.GetListNew(18,5,Model.Item.Id);
+    List<API.Areas.Admin.Models.Articles.Articles> ListDamBaoChatLuong = API.Areas.Admin.Models.Articles.ArticlesService.GetListNew(9,5,Model.Item.Id);
+<section id="block-view-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="title">
+                    <h2>
+                        <i class="fas fa-calendar-alt faa-wrench animated "></i>
+                        <a href="/categories/lich-thi-19.html">Lịch Thi <small>Xem Thêm</small></a>
+                    </h2>
+                </div>
+                <ul>
+                    @if (ListLichThi != null && ListLichThi.Count() > 0) { 
+                        for (int i = 0; i < ListLichThi.Count(); i++)
+                        {
+                            <li><a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListLichThi[i].Id" asp-route-alias="@ListLichThi[i].Alias"><i class="fas fa-angle-right"></i> @ListLichThi[i].Title </a></li>
+                        }
+                     }
+                </ul>
+
+            </div>
+            <div class="col-lg-4">
+                <div class="title">
+                    <h2>
+                        <i class="far fa-calendar-alt faa-wrench animated "></i>
+                        <a href="/categories/danh-sach-phong-thi-18.html">Danh sách phòng thi  <small>Xem Thêm</small></a>
+                    </h2>
+                </div>
+                <ul>
+                    @if (ListDanhSachPhongThi != null && ListDanhSachPhongThi.Count() > 0)
+                    {
+                        for (int i = 0; i < ListDanhSachPhongThi.Count(); i++)
+                        {
+                            <li><a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListDanhSachPhongThi[i].Id" asp-route-alias="@ListDanhSachPhongThi[i].Alias"><i class="fas fa-angle-right"></i> @ListDanhSachPhongThi[i].Title </a></li>
+                        }
+                    }
+                </ul>
+            </div>
+            <div class="col-lg-4">
+                <div class="title">
+                    <h2>
+                        <i class="far fa-calendar-alt faa-wrench animated "></i>
+                        <a href="/categories/dam-bao-chat-luong-9.html">Đảm bảo chất lượng <small>Xem Thêm</small></a>
+                    </h2>
+                </div>
+                <ul>
+                    @if (ListDamBaoChatLuong != null && ListDamBaoChatLuong.Count() > 0)
+                    {
+                        for (int i = 0; i < ListDamBaoChatLuong.Count(); i++)
+                        {
+                            <li><a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListDamBaoChatLuong[i].Id" asp-route-alias="@ListDamBaoChatLuong[i].Alias"><i class="fas fa-angle-right"></i> @ListDamBaoChatLuong[i].Title </a></li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+
+        
+    </div>
+</section>
+}
+
+@if (Model.Item.Id != 12)
+{
+<section id="news-hot">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-8 col-md-8 col-sm-8">
+                <h3 class="title">TIN NỔI BẬT</h3>
+                <div class="news-hot-right">
+                    <!-- Set up your HTML -->
+                    <div class="row microsite_1">
+                        @if (ListArticlesHot != null && ListArticlesHot.Count() > 0)
+                        {
+                            @for (int i = 0; i < ListArticlesHot.Count(); i++)
+                            {
+                                <div class="col-md-4">
+                                    <img class="img-fluid" src="@ListArticlesHot[i].Images" title="@ListArticlesHot[i].Title" alt="@ListArticlesHot[i].Title" />
+                                    <h5 class="mt-0"><a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListArticlesHot[i].Id" asp-route-alias="@ListArticlesHot[i].Alias" title="@ListArticlesHot[i].Title">@API.Models.MyHelper.StringHelper.StringReadmore(ListArticlesHot[i].Title, 60)</a></h5>
+                                    <time>@ListArticlesHot[i].PublishUp.ToString("hh:mm") |  @ListArticlesHot[i].PublishUp.ToString("dd/MM/yyyy")</time>
+                                </div>
+
+                            }
+                        }
+                        else
+                        {
+                            <div class="col-12">
+                                <div class="no-rows">Không có dữ liệu</div>
+                            </div>
+                        }
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4 col-md-4 col-sm-4">
+                <h3 class="title">Thông báo </h3><a class="link" href="/categories/thong-bao-8.html">Xem tất cả</a>
+                <div class="news-hot-left">
+                    @if (ListArticlesNew_4 != null && ListArticlesNew_4.Count() > 0)
+                    {
+
+                        @for (int i = 0; i < ListArticlesNew_4.Count(); i++)
+                        {
+                            <div class="media">
+                                <div class="mr-3 news-hot-left-img">@ListArticlesNew_4[i].PublishUp.ToString("MM") <br />@ListArticlesNew_4[i].PublishUp.ToString("yyyy")</div>
+                                <div class="media-body">
+                                    <h5 class="mt-0"><a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListArticlesNew_4[i].Id" asp-route-alias="@ListArticlesNew_4[i].Alias" title="@ListArticlesNew_4[i].Title">@ListArticlesNew_4[i].Title</a></h5>
+                                    @API.Models.MyHelper.StringHelper.StringReadmore(ListArticlesNew_4[i].IntroText, 130)
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="no-rows">Không có dữ liệu</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+}
+
+<section id="block-news">
+    <div class="container">
+        <div class="row">           
+
+            <div class="col-12 col-lg-6 col-md-6 col-sm-6 ">
+                <div class="news-item">
+                    <h4>TIN TỨC & SỰ KIỆN</h4>
+                        @if (ListArticlesNew_1 != null && ListArticlesNew_1.Count() > 0)
+                        {
+                            <a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListArticlesNew_1[0].Id" asp-route-alias="@ListArticlesNew_1[0].Alias" title="@ListArticlesNew_1[0].Title">
+                                <img style="width:356px;height:236px" src="@ListArticlesNew_1[0].Images" title="@ListArticlesNew_1[0].Title" alt="@ListArticlesNew_1[0].Title" />
+                            </a>
+                            <a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListArticlesNew_1[0].Id" asp-route-alias="@ListArticlesNew_1[0].Alias" title="@ListArticlesNew_1[0].Title">
+                                <h3>
+                                    @ListArticlesNew_1[0].Title
+                                </h3>
+                            </a>
+                            <p>
+                                @API.Models.MyHelper.StringHelper.StringReadmore(ListArticlesNew_1[0].IntroText, 200)
+                            </p>
+                            <ul>
+                                @for (int i = 0; i < ListArticlesNew_1.Count(); i++)
+                                {
+                                    <li><a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListArticlesNew_1[i].Id" asp-route-alias="@ListArticlesNew_1[i].Alias" title="@ListArticlesNew_1[i].Title">@API.Models.MyHelper.StringHelper.StringReadmore(ListArticlesNew_1[i].Title, 55)</a></li>
+                                }
+                            </ul>
+                        }
+                        else {
+                            <div class="no-rows">Không có dữ liệu</div>
+                        }
+                </div>
+            </div><!--Tin tức, Sự Kiện-->
+
+            <div class="col-12 col-lg-6 col-md-6 col-sm-6">
+                <div class="news-item">
+                    <h4>HOẠT ĐỘNG @Model.Item.Title</h4>
+                    @if (ListArticlesNew_3 != null && ListArticlesNew_3.Count() > 0)
+                    {
+                        <a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListArticlesNew_3[0].Id" asp-route-alias="@ListArticlesNew_3[0].Alias" title="@ListArticlesNew_3[0].Title">
+                            <img style="width:356px;height:236px" src="@ListArticlesNew_3[0].Images" title="@ListArticlesNew_3[0].Title" alt="@ListArticlesNew_3[0].Title" />
+                        </a>
+                        <a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListArticlesNew_3[0].Id" asp-route-alias="@ListArticlesNew_3[0].Alias" title="@ListArticlesNew_3[0].Title">
+                            <h3>
+                                @ListArticlesNew_3[0].Title
+                            </h3>
+                        </a>
+                        <p>
+                            @API.Models.MyHelper.StringHelper.StringReadmore(ListArticlesNew_3[0].IntroText, 200)
+                        </p>
+                        <ul>
+                            @for (int i = 0; i < ListArticlesNew_3.Count(); i++)
+                            {
+                                <li><a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListArticlesNew_3[i].Id" asp-route-alias="@ListArticlesNew_3[i].Alias" title="@ListArticlesNew_3[i].Title">@API.Models.MyHelper.StringHelper.StringReadmore(ListArticlesNew_3[i].Title, 55)</a></li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <div class="no-rows">Không có dữ liệu</div>
+                    }
+                </div>
+            </div><!--Tuyển Sinh-->
+
+
+        </div>
+    </div>
+</section>
+
+@await Html.PartialAsync("_PartialNewsFeatured", new API.Models.PartialModel.PartialNewsFeatured() { ListItems = ListArticlesHotRoot})
+@Html.Partial("_PartialPartner")
+

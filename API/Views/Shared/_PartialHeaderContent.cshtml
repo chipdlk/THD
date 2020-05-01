@@ -1,0 +1,70 @@
+﻿@model API.Models.Home.HeaderContentModel;
+@using Microsoft.AspNetCore.Http
+@{
+    var ItemConfig = API.Areas.Admin.Models.SYSParams.SYSParamsService.GetItemConfigByHome();
+    int IdCoQuan = 1;
+    if (Context.Session.GetString("IdCoQuan") != null && Context.Session.GetString("IdCoQuan") != "")
+    {
+        IdCoQuan = int.Parse(Context.Session.GetString("IdCoQuan"));
+    }
+    string Title_1 = "TRƯỜNG ĐẠI HỌC";
+    string Title_2 = "";
+    string Title_3 = "BUÔN MA THUỘT";
+    if (Model != null && IdCoQuan > 1)
+    {
+        Title_1 = Context.Session.GetString("Title_1");
+        Title_2 = Context.Session.GetString("Title_2");
+        Title_3 = Context.Session.GetString("Title_3");
+    }
+}
+<div class="header-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="logo">
+                    <a href="/"><img src="~/images/logo.svg" style="width:136px" title="" alt="" /></a>
+                </div>
+                <div class="logo-text">
+                    @Title_1 <br />
+                    <div class="logo-name"><span>@Title_2</span> @Title_3</div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <ul class="list-inline social-link">
+                    <li class="list-inline-item">
+                        <form id="search-all" method="get" asp-controller="Home" asp-action="Search">
+                            <div class="box-search">
+                                <input name="keyword" id="content-search-all" type="text" class="form-control border-0 rounded-pill" placeholder="Tìm kiếm" aria-label="BoxSearch">
+                                <button id="btn-search-all" type="submit" ><i  class="fas fa-search"></i></button>
+                            </div>
+                        </form>
+
+                    </li>
+                    <li class="list-inline-item"><a class="social-icon" href="@ItemConfig.Youtube"><i class="fab fa-youtube"></i></a></li>
+                    <li class="list-inline-item"><a class="social-icon" href="mailto:@ItemConfig.Email" ><i class="fas fa-envelope"></i></a></li>
+                    <li class="list-inline-item"><a class="social-icon" href="@ItemConfig.Facebook"><i class="fab fa-facebook-f"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        $("#btn-search-all").click(function (e) {
+            e.preventDefault();
+            $("#search-all").submit();
+        });
+
+        $('#content-search-all').keypress(function (e) {
+          if (e.which == 13) {
+            $('form#search-all').submit();
+            return false;    //<---- Add this line
+          }
+        });
+    });
+
+
+</script>

@@ -1,0 +1,124 @@
+﻿@model API.Areas.Admin.Models.Articles.ArticlesModel
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = (Model.Item.Title);
+    ViewData["Description"] = (Model.Item.Metadesc);
+    ViewData["Keywords"] = (Model.Item.Metakey);
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+
+}
+<div class="navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-inline  nlist">
+                    <li>
+                        <a href="/">Trang chủ</a>
+                        @if (!Model.Item.StaticPage)
+                        {
+                            <i class="fa fa-angle-right"></i>
+                            <a asp-controller="Articles" asp-action="GetByCat" asp-route-id="@Model.Categories.Id" asp-route-alias="@Model.Categories.Alias">@(Model.Categories.Title)</a>
+                        }
+                        else
+                        {
+                            <i class="fa fa-angle-right"></i>
+                            @Model.Item.Title
+                        }
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="col1">
+                <div class="row PageDetail PageDetail-@Model.Item.Alias">
+
+                    <div class="col-md-12 article-body">
+                        <div class="ContentArticle">
+                            <h1 class="Title">@(Model.Item.Title)</h1>
+                            <p class="text-muted icon">
+                                <span class="date"> Cập nhật lúc: @Model.Item.PublishUpShow</span>
+                                <i class="fa fa-eye marginleft10"></i> @(Model.Item.Hit)
+
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 full-text article-content">
+                        @Html.Raw(Model.Item.FullText)
+                    </div>
+                    @if (Model.Item.ListFile != null && Model.Item.ListFile.Count() > 0)
+                    {
+                    <div class="col-12">
+                        <table class="table table-bordered">
+                            @for (int j = 0; j < Model.Item.ListFile.Count(); j++)
+                            {
+                                var filename = Model.Item.ListFile[j].FilePath.Substring(Model.Item.ListFile[j].FilePath.LastIndexOf('/') + 1);
+                                string ex = API.Models.ManagerFiles.ManagerFilesService.GetExtension(Model.Item.ListFile[j].FilePath);
+                                string url = "";
+                                if (Context.Request.IsHttps)
+                                {
+                                    url = "https://" + Context.Request.Host + Model.Item.ListFile[j].FilePath;
+                                }
+                                else
+                                {
+                                    url = "http://" + Context.Request.Host + Model.Item.ListFile[j].FilePath;
+                                }
+                                <tr>
+                                    <td class="text-primary">@filename </td>
+                                    <td class="text-center">
+                                        <a href="@Model.Item.ListFile[j].FilePath" target="_blank" class="text-primary"><i class="fas fa-file-download mr-1"></i> Tải file</a>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (ex == ".pdf")
+                                        {
+                                            <a class="text-success viewFile" style="cursor:pointer" val="@url"><i class="fas fa-eye mr-1"></i>Xem văn bản</a>
+                                        }
+
+                                    </td>
+                                </tr>
+
+                            }
+                        </table>
+                    </div>
+                    }
+                    <div class="col-12 mt-4">
+                        <iframe id="myFrame" style="display:none" src="" width="100%" height="800px"></iframe>
+                    </div>
+                </div>
+               
+                <div class="row">
+                    <div class="col-md-12">
+                        @await Html.PartialAsync("_PartialRelativeArticles", Model)
+                    </div>
+                </div>
+            </div>
+            <div class="col2">
+                <partial name="_PartialRightCol" />
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+
+
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $(".viewFile").click(function () {
+            var url = $(this).attr("val");
+            $("#myFrame").attr("src", url);
+
+            $("#myFrame").show();
+
+
+        })
+    })
+</script>

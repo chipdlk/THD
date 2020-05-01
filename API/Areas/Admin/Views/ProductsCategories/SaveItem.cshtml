@@ -1,0 +1,165 @@
+﻿@model API.Areas.Admin.Models.ProductsCategories.ProductsCategoriesModel
+@{
+    if (Model.Item.Id == 0)
+    {
+        ViewData["Title"] = "Thêm mới Danh Mục";
+    }
+    else
+    {
+        ViewData["Title"] = "Cập nhật Danh Mục";
+    }
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+    <style>
+        .modal-content {
+            /* 100% = dialog height, 120px = header + footer */
+            height: 600px;
+            width: 875px;
+        }
+    </style>
+<div class="card">
+    <div class="card-header">
+        <h4>@ViewData["Title"]</h4>
+    </div>
+    <div class="card-body">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <partial name="_PartialMsgInfoAdmin" />
+        <form asp-controller="@ControllerName" asp-action="SaveItem" enctype="multipart/form-data" method="post">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label asp-for="Item.Title" class="control-label">Tên</label>
+                        <input asp-for="Item.Title" class="form-control Changetitle namepr" />
+                        <span asp-validation-for="Item.Title" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Alias" class="control-label"></label>
+                        <input asp-for="Item.Alias" class="form-control slug" />
+                        <span asp-validation-for="Item.Alias" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Item.ParentId">Danh mục cha <sup class="text-danger"> (*)</sup></label>
+                        <select asp-for="Item.ParentId" class="form-control" asp-items="Model.ListItemsDanhMuc"></select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Item.Ordering" class="control-label"> Sắp Xếp</label>
+                        <input asp-for="Item.Ordering" class="form-control" />
+                        <span asp-validation-for="Item.Ordering" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Hình đại diện</label>
+                <br />
+                <img src="@Model.Item.Images" id="customRoxyImage" style="height:100px;">
+                <br />
+                <br />
+                <input type="hidden" class="form-control" asp-for="Item.Images">
+                <a href="javascript:openCustomRoxy()" type="button" class="btn">Chọn hình</a>
+                <div id="roxyCustomPanel" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <iframe src="/lib/fileman/index.html?integration=custom&langCode=vi" style="width:100%;height:100%" frameborder="0"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Item.Description" class="control-label">Mô tả</label>
+                        <textarea asp-for="Item.Description" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Item.Metadesc" class="control-label"></label>
+                        <textarea asp-for="Item.Metadesc" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Item.Metakey" class="control-label"></label>
+                        <textarea asp-for="Item.Metakey" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Item.Metadata" class="control-label"></label>
+                        <textarea asp-for="Item.Metadata" class="form-control"></textarea>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>&ensp;</label>
+                    <div class="form-group form-check-inline">
+
+                        <div class="checkbox">
+                            <label>
+                                <input asp-for="Item.Status" /> Trạng Thái
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-check-inline">
+                        <label>&ensp;</label>
+                        <div class="checkbox">
+                            <label>
+                                <input asp-for="Item.FeaturedHome" /> Hiện Trang Chủ
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    
+                </div>
+                
+                <div class="col">
+                    <div class="form-group">
+                        <label asp-for="Item.Hits" class="control-label">Lượt truy cập</label>
+                        <input asp-for="Item.Hits" class="form-control" />
+                        <span asp-validation-for="Item.Hits" class="text-danger"></span>
+                    </div>
+                </div>
+
+            </div>
+            <input type="submit" class="btn btn-primary" name="SaveItem" value="Lưu" />
+            <a class="btn btn-danger" asp-controller="@ControllerName" asp-action="Index">Hủy</a>
+            <input type="hidden" class="form-control" asp-for="Item.Id">
+            <input type="hidden" class="form-control" asp-for="Item.Ids">
+
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+        var roxyFileman = '/lib/fileman/index.html';
+        $(function () {
+            CKEDITOR.replace('NoiDung', {
+                filebrowserBrowseUrl: roxyFileman,
+                filebrowserImageBrowseUrl: roxyFileman + '?type=image',
+                removeDialogTabs: 'link:upload;image:upload'
+            });
+        });
+    </script>
+    <script>
+        function openCustomRoxy() {
+            $('#roxyCustomPanel').modal('show');
+        }
+        function closeCustomRoxy() {
+            $('#roxyCustomPanel').modal('hide');
+        }
+    </script>
+}

@@ -1,0 +1,41 @@
+﻿@using API.Areas.Admin.Models.Articles;
+@{
+    var ListNews = ArticlesService.GetListNew();
+}
+
+
+
+
+
+
+
+    <div class="card mt-1 mb-1 sideCard">
+        <div class="card-header">Bài viết mới</div>
+        <div class="card-body">
+
+            @if (ListNews == null || ListNews.Count() == 0)
+            {
+                <p>Chưa có bài đăng</p>
+            }
+            else
+            {
+                <div class="first-item">
+                    <a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListNews[0].Id"  asp-route-alias="@ListNews[0].Alias">
+                        <img class="img-fluid" src="@ListNews[0].Images" alt="@ListNews[0].Title">
+                    </a>
+                    
+                    <div>
+                        <a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListNews[0].Id"  asp-route-alias="@ListNews[0].Alias"  class="mt-0 title">@ListNews[0].Title</a>
+                        <p class="intro-text">@ListNews[0].IntroText</p>
+                    </div>
+                </div>
+                <ul>
+                    @for (int i = 1; i < ListNews.Count() - 1; i++)
+                    {
+                        <li><a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListNews[i].Id"  asp-route-alias="@ListNews[i].Alias">@ListNews[i].Title  <time datetime="@ListNews[i].CreatedDate">(@ListNews[i].CreatedDate )</time> </a></li>
+                    }
+                </ul>
+
+            }
+        </div>
+    </div>

@@ -1,0 +1,15 @@
+﻿@model API.Areas.Admin.Models.ImportDBOld.ImportDBOldModel
+@{
+    Layout = "_layoutAdmin";
+    ViewData["Title"] = "Index";
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+@if (Model.ListItems != null)
+{
+    <h1>@Model.ListItems.Count()</h1>
+}
+else {
+<h2>Khong cos</h2>
+}
+
+

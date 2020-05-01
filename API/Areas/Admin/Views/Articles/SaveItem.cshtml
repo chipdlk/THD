@@ -1,0 +1,353 @@
+﻿@model API.Areas.Admin.Models.Articles.ArticlesModel
+@using Microsoft.AspNetCore.Http;
+@{
+    if (Model.Item.Id == 0)
+    {
+        ViewData["Title"] = "Thêm mới Bài viết";
+    }
+    else
+    {
+        ViewData["Title"] = "Cập nhật Bài viết";
+    }
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+    string Str_Url = "/Admin/" + ControllerName + "/Index" + Context.Session.GetString("STR_Action_Link_" + ControllerName + "_" + Context.Request.Headers["UserName"]);
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>@ViewData["Title"]</h4>
+    </div>
+    <div class="card-body">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <form asp-controller="@ControllerName" enctype="multipart/form-data" asp-action="SaveItem" method="post">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label asp-for="Item.Title">Tên <sup class="text-danger"> (*)</sup></label>
+                        <input type="text" name="Title" class="form-control Changetitle namepr" asp-for="Item.Title">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Alias" class="control-label"></label>
+                        <input asp-for="Item.Alias" name="Alias" class="form-control slug" />
+                        <span asp-validation-for="Item.Alias" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Item.CatId">Danh mục <sup class="text-danger"> (*)</sup></label>
+                        <select asp-for="Item.CatId" name="CatId" class="form-control" asp-items="Model.ListItemsDanhMuc"></select>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Ngày Đăng <sup class="text-danger"> (*)</sup></label>
+                        <div class="input-group date" id="PublishUpShow" data-target-input="nearest">
+                            <input type="text" asp-for="Item.PublishUpShow" name="PublishUpShow" class="form-control datetimepicker-input" data-target="#PublishUpShow" id="PublishUpShow" />
+                            <div class="input-group-append" data-target="#PublishUpShow" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Item.AuthorId">Tác Giả</label>
+                        <select asp-for="Item.AuthorId" name="AuthorId" class="form-control" asp-items="Model.ListItemsAuthors"></select>
+                    </div>
+                </div>*@
+
+                <div class="col-md-3">
+                    <label class="control-label">&nbsp;</label>
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox custom-control-inline">
+                            <input asp-for="Item.Status" name="Status" class="custom-control-input" />
+                            <label class="custom-control-label" asp-for="Item.Status">Hiển thị</label>
+                        </div>
+
+                        <div class="custom-control custom-checkbox custom-control-inline">
+                            <input asp-for="Item.Featured" name="Featured" class="custom-control-input" />
+                            <label class="custom-control-label" asp-for="Item.Featured"> Nổi Bật</label>
+                        </div>
+
+                        <div class="custom-control custom-checkbox custom-control-inline">
+                            <input asp-for="Item.Notification" name="Notification" class="custom-control-input" />
+                            <label class="custom-control-label" asp-for="Item.Notification"> Thông báo</label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group images-main">
+                        <label>Hình đại diện</label>
+                        <img src="@Model.Item.Images" id="customRoxyImage" style="height:50px;">
+                        <input type="hidden" name="Images" id="Item_Images" class="form-control" asp-for="Item.Images">
+                        <a href="javascript:openCustomRoxy()" type="button" class="btn btn-primary">Chọn hình</a>
+                        <div id="roxyCustomPanel" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content content-set-image">
+                                    <iframe src="/lib/fileman/index.html?integration=custom&langCode=vi" style="width:100%;height:100%" frameborder="0"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Item.TypeId">Loại bài viết</label>
+                        <select asp-for="Item.TypeId" name="TypeId" class="form-control" asp-items="Model.ListItemType"></select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Item.SourceLink">Nguồn</label>
+                         <input type="text" name="SourceLink" class="form-control" asp-for="Item.SourceLink">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    @if (Model.Item.CreatedBy != null)
+                    {
+                        <div>
+                            <p><strong>Log:</strong></p>
+                            <p>Tạo bởi: @Model.Item.CreatedByName - <span class="small text-primary">@DateTime.Parse(@Model.Item.CreatedDate.ToString()).ToString("dd/MM/yy HH:mm:ss")</span></p>
+
+                        </div>
+                        <div>
+
+                            @if (Model.Item.ModifiedBy != null)
+                            {
+                                <p>Sửa bởi:@Model.Item.ModifiedByName -  <span class="small text-primary">@DateTime.Parse(@Model.Item.ModifiedDate.ToString()).ToString("dd/MM/yy HH:mm:ss")</span></p>
+                            }
+                        </div>
+                    }
+
+                </div>
+               
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label asp-for="Item.IntroText">Mô tả</label>
+                        <textarea asp-for="Item.IntroText" name="IntroText" class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Item.FullText">Nội dung bài viết</label>
+                <textarea asp-for="Item.FullText" id="NoiDung" name="FullText" class="form-control"></textarea>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">File Đính kèm</legend>
+                        <div class="file-list">
+
+                            @if (Model.Item.ListFile != null && Model.Item.ListFile.Count() > 0)
+                            {
+                                <input type="hidden" id="maxfile" value="@(Model.Item.ListFile.Count()-1)">
+                                for (int j = 0; j < Model.Item.ListFile.Count(); j++)
+                                {
+                                    <div class="file-item">
+                                        <input type="hidden" asp-for="@Model.Item.ListFile[j].FilePath" name="ListFile[@j].FilePath" class="FileName" id="FileName_@j">
+                                        <a href="javascript:openCustomRoxy2(@j)" type="button" class="btn btn-primary">Chọn File</a>
+                                        <span class="lblFileName" id="lblFileName_@j">@Model.Item.ListFile[j].FilePath</span>  <span class="text-danger xoafile">Xóa</span>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <input type="hidden" id="maxfile" value="-1">
+                            }
+                        </div>
+                        <p style="margin:10px 5px; cursor:pointer" class="text-primary" onclick="ThemFile()">
+                            <i class="fa fa-plus-square"></i> Thêm file
+                        </p>
+                    </fieldset>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Link Tin liên quan</legend>
+                        <div class="link-article-list"></div>
+                        <p style="margin:10px 5px; cursor:pointer" class="text-primary" onclick="AddLinkArticle()">
+                            <i class="fa fa-plus-square"></i> Thêm Link Liên Quan
+                        </p>
+                        <fieldset>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Metadata" class="control-label"></label>
+                        <textarea asp-for="Item.Metadata" name="Metadata" class="form-control"></textarea>
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Metadesc" class="control-label"></label>
+                        <textarea asp-for="Item.Metadesc" name="Metadesc" class="form-control"></textarea>
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Metakey" class="control-label"></label>
+                        <textarea asp-for="Item.Metakey" name="Metakey" class="form-control"></textarea>
+
+                    </div>
+                </div>
+
+
+            </div>
+            <input type="submit" class="btn btn-primary" name="SaveItem" value="Lưu" />
+            <a class="btn btn-danger" href="@Str_Url">Hủy</a>
+            <input type="hidden" name="Id" class="form-control" asp-for="Item.Id">
+            <input type="hidden" name="Ids" class="form-control" asp-for="Item.Ids">
+            <input type="hidden" name="PublishUp" class="form-control" asp-for="Item.PublishUp">
+
+
+        </form>
+    </div>
+</div>
+
+<div id="roxyCustomPanel2" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content content-set-image">
+            <iframe id="ifrm2" src="" style="width:100%;height:100%" frameborder="0"></iframe>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/lib/ckeditor/ckeditor.js"></script>
+    <script src="~/lib/ckeditor/adapters/jquery.js"></script>
+    <script>
+
+        var roxyFileman = '/lib/fileman/index.html';
+        $(function () {
+            CKEDITOR.replace('NoiDung', {
+                filebrowserBrowseUrl: roxyFileman,
+                filebrowserImageBrowseUrl: roxyFileman + '?type=image',
+                removeDialogTabs: 'link:upload;image:upload'
+            });
+        });
+    </script>
+    <script>
+        function openCustomRoxy() {
+
+            $('#roxyCustomPanel').modal('show');
+        }
+        function closeCustomRoxy() {
+            $('#roxyCustomPanel').modal('hide');
+        }
+    </script>
+
+    <script src="~/js/moment.js"></script>
+    <script src="~/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <script type="text/javascript">
+            var str_link = '@Html.Raw(Model.Item.Str_Link)';
+            var ListLinkArticle = null;
+
+
+
+            $(document).ready(function () {
+                if (str_link != null && str_link != '') {
+                    ListLinkArticle = JSON.parse(str_link);
+                    BuildHtmlLinkArticle();
+                } else {
+                    ListLinkArticle = [];
+                }
+
+            });
+            $(function () {
+
+                $('#PublishUpShow').datetimepicker({
+                    format: 'DD/MM/YYYY',
+                });
+            });
+
+            // File đính kèm
+
+            function openCustomRoxy2(id) {
+                var roxyFileman2 = '/lib/fileman/index.html?integration=custom_2&langCode=vi&txtFieldId=' + id;
+                $('#ifrm2').attr('src', roxyFileman2)
+                $('#roxyCustomPanel2').modal('show');
+            }
+            function closeCustomRoxy2() {
+                $('#roxyCustomPanel2').modal('hide');
+            }
+
+            function ThemFile() {
+                var max = parseInt($("#maxfile").val()) + 1;
+                /**/
+                $(".file-list").append('<div class="file-item"><input type="hidden" name="ListFile[' + max + '].FilePath" class="FileName" id="FileName_' + max + '"><a href="javascript:openCustomRoxy2(' + max + ')" type="button" class="btn btn-primary">Chọn File</a><span class="lblFileName" id="lblFileName_' + max + '"></span>  <span class="text-danger xoafile">Xóa</span></div>');
+                /**/
+                $("#maxfile").val(max);
+            }
+
+            $('.file-list').on('click', '.file-item .xoafile', function (event) {
+
+                $(this).parent().find(".lblFileName").empty();
+                $(this).parent().find(".FileName").val("");
+            })
+
+    function AddLinkArticle() {
+                console.log(ListLinkArticle);
+                var Item = { Title: '', Link: '', Status: true };
+                if (ListLinkArticle == null) {
+                    ListLinkArticle = [];
+                }
+                ListLinkArticle.push(Item);
+                BuildHtmlLinkArticle();
+
+            }
+            function DeleteLinkArticle(i) {
+                ListLinkArticle[i].Status = false;
+                BuildHtmlLinkArticle();
+            }
+            function BuildHtmlLinkArticle() {
+                if (ListLinkArticle != null && ListLinkArticle.length > 0) {
+                    $(".link-article-list").html('');
+
+                    for (var i = 0; i < ListLinkArticle.length; i++) {
+                        if (ListLinkArticle[i].Status) {
+                            str = '<div class="link-article-item"><div class="row">';
+                            str = str + '<div class="col-lg-3"><input onchange="UpdateDataLinkArticle(' + i + ',1,event)" name="ListLinkArticle[' + i + '].Title" class="form-control" placeholder="Tiêu Đề" value="'+ListLinkArticle[i].Title+'" /></div>';
+                            str = str + '<div class="col-lg-3"><input onchange="UpdateDataLinkArticle(' + i + ',2,event)" name="ListLinkArticle[' + i + '].Link"  class="form-control" placeholder="Link" value="'+ListLinkArticle[i].Link+'"/></div>';
+                            str = str + '<div class="col-lg-2"><span class="btn btn-danger" onclick="DeleteLinkArticle(' + i + ')">Xóa</span></div>';
+                            str = str + '<input type="hidden" name="ListLinkArticle[' + i + '].Status" value="'+ListLinkArticle[i].Status+'"/></div></div>';
+                            $(".link-article-list").append(str);
+                        }
+                    }
+                }
+            }
+    function UpdateDataLinkArticle(i, n, event) {
+        console.log(event.target.value);
+        if (n == 1) {// Title
+            ListLinkArticle[i].Title = event.target.value;
+        } else if (n == 2) {
+            ListLinkArticle[i].Link = event.target.value;
+        }
+    }
+    </script>
+}
+<style>
+    .link-article-item {
+        margin-top: 10px;
+    }
+</style>

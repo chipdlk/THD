@@ -1,0 +1,264 @@
+﻿@model API.Areas.Admin.Models.CategoriesAblums.CategoriesAblumsModel
+@{
+    if (Model.Item.Id == 0)
+    {
+        ViewData["Title"] = "Thêm mới Ablum Ảnh";
+    }
+    else
+    {
+        ViewData["Title"] = "Cập nhật Ablum Ảnh";
+    }
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>@ViewData["Title"]</h4>
+    </div>
+    <div class="card-body">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <form id="formSubmit" method="post" enctype="multipart/form-data">
+            <div id="imageList"></div>
+            <div class="row">
+                <div class="col-8">
+                    <div class="form-group">
+                        <label asp-for="Item.Title">Tên <sup class="text-danger"> (*)</sup></label>
+                        <input id="txtTen" type="text" class="form-control Changetitle namepr" asp-for="Item.Title" name="Title">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Alias">Alias <sup class="text-danger"> (*)</sup></label>
+                        <input id="txtAlias" class="form-control slug" type="text"  asp-for="Item.Alias" name="Alias">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Item.ParentId">Danh mục cha <sup class="text-danger"> (*)</sup></label>
+                        <select asp-for="Item.ParentId" class="form-control" asp-items="Model.ListItemsParents"></select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox custom-control-inline">
+                            <input asp-for="Item.Featured" name="Featured" class="custom-control-input" />
+                            <label class="custom-control-label" asp-for="Item.Featured">Nổi bật</label>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox custom-control-inline">
+                            <input asp-for="Item.Status" name="Status" class="custom-control-input" />
+                            <label class="custom-control-label" asp-for="Item.Status">Trạng Thái</label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Hình đại diện</label>
+                        <br />
+                        <img src="@Model.Item.Images" id="customRoxyImage" style="height:100px;">
+                        <br />
+                        <br />
+                        <input type="hidden" name="Images" id="Item_Images" class="form-control" asp-for="Item.Images">
+                        <a href="javascript:openCustomRoxy()" type="button" class="btn">Chọn hình</a>
+                        <div id="roxyCustomPanel" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content content-set-image">
+                                    <iframe src="/lib/fileman/index.html?integration=custom&langCode=vi" style="width:100%;height:100%" frameborder="0"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Item.Description">Mô tả</label>
+                        <textarea id="txtDes" asp-for="Item.Description" name="Description" class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <div class="upload-button">
+                    <div class="label">Chọn Ảnh</div>
+                    <input class="btn-info" id="files" type="file" name="files" size="1" accept="image/gif, image/jpeg, image/png" multiple onchange="chonuploadFiles('files');" />
+                    <a class="btn btn-danger" asp-controller="@ControllerName" onclick="HuyAnh()">Hủy Ảnh</a>
+                </div>
+            </div>
+
+            <input id="btUpload" type="button" class="btn btn-primary" value="Lưu" />
+            <a class="btn btn-danger" asp-controller="@ControllerName" asp-action="Index">Hủy</a>
+            <input id="txtId" type="hidden" class="form-control" asp-for="Item.Id" name="Id">
+            <input id="txtIds" type="hidden" class="form-control" asp-for="Item.Ids" name="Ids">
+
+        </form>
+        <table id="tbAlbums" role="presentation" class="table table-striped"><tbody class="files"></tbody></table>
+
+    </div>
+</div>
+
+
+<script>
+    var clientLink = "";
+    var nameImg = "";   
+    var formData = null;
+    var listImg = [];
+    var storedFiles = []; 
+    var storedFilesEdit = [];
+
+    function chonuploadFiles(inputId) {
+        var input = document.getElementById(inputId);
+        var files = input.files;
+                
+        for (var i = 0; i != files.length; i++) {           
+            storedFiles.push(files[i]);
+            readFiles(files[i]).then(x => {                  
+                var row = $("<tr/>")
+                .append($("<td/>").append($("<img height='64px' width='64px' />").attr("src", clientLink)))
+                .append($("<td/>").append($("<a/>").text(nameImg)))                   
+                .append($("<td width='150px' />").append($("<input type='button' class='ibtnDel btn btn-md btn-danger' value='Delete' id=" + nameImg + ">")));
+
+                $("#tbAlbums tbody").append(row);                 
+            });            
+        }
+        $("#input").removeClass("bar");
+    }
+    function removeFilesEdit(Id) {
+        for (var i = 0; i != storedFilesEdit.length; i++) {
+            var fileChon = storedFilesEdit[i];
+            if (fileChon.Id == Id) {
+                fileChon.Deleted = true;
+                break;
+            }
+        };
+    }
+    function removeFiles(Id) {
+        for (var i = 0; i != storedFiles.length; i++) {
+            var fileChon = storedFiles[i];
+            if (fileChon.name == name) {
+                storedFiles.splice(i, 1);
+                break;
+            }
+        };
+    }
+    function HuyAnh() {
+        $("#tbAlbums tbody").empty();
+    }
+    async function readFiles(file) {
+        // Create the file reader
+        let reader = new FileReader();
+        // Start reading this file
+        var obj = await readFileAsync(file);
+        clientLink = obj.link;
+        nameImg = obj.name;       
+    }
+
+    function readFileAsync(file) {
+        return new Promise((resolve, reject) => {
+            let reader = new FileReader();
+
+            reader.onload = () => {
+                var person = {
+                    name: file.name,
+                    link: reader.result                    
+                };
+                //resolve(reader.result);
+                resolve(person);
+            };
+
+            reader.onerror = reject;
+
+            reader.readAsDataURL(file);
+        })
+    }
+    $(document).ready(function () {
+        console.log("document");
+        $("#tbAlbums tbody").empty();
+        storedFilesEdit = @Html.Raw(Json.Serialize(Model.ListItemsAlbums));
+        
+        if (storedFilesEdit != null && storedFilesEdit.length>0) {
+            for (var i = 0; i != storedFilesEdit.length; i++) {
+                var row = $("<tr/>")
+                    .append($("<td/>").append($("<img height='64px' width='64px' src='"+storedFilesEdit[i].LinkImg+"' />")))
+                    .append($("<td/>").append($("<a/>").text(storedFilesEdit[i].Images)))
+                    .append($("<td width='150px'/>").append($("<input type='button' class='ibtnDelEdit btn btn-md btn-danger' value='Delete' id=" + storedFilesEdit[i].Id + ">")));
+
+                $("#tbAlbums tbody").append(row);
+            }
+        }
+
+        $(".ibtnDelEdit").on("click", function () {
+           
+            var nameImg = $(this).attr('id');
+            
+            removeFiles(nameImg);
+            $(this).closest("tr").remove();
+            for (var i = 0; i != storedFilesEdit.length; i++) {
+                
+                if (storedFilesEdit[i].Id == nameImg) {
+                    storedFilesEdit[i].Deleted = true;
+                }
+            }
+        });
+        $('#btUpload').on('click', function () {
+            var fdata = new FormData();
+            for (var i = 0; i < storedFiles.length; i++) {
+                fdata.append("files", storedFiles[i]);
+            }
+            console.log(storedFilesEdit);
+            fdata.append("data", storedFilesEdit != null ? JSON.stringify(storedFilesEdit) : null);
+            fdata.append("Status", $(".custom-control-input").val());
+            fdata.append("Desc", $("#txtDes").val());
+            fdata.append("Id", $("#txtId").val());
+            fdata.append("Ids", $("#txtIds").val());
+            fdata.append("Ten", $("#txtTen").val());
+            fdata.append("Images", $("#Item_Images").val());
+            fdata.append("ParentId", $("#Item_ParentId").val());
+            fdata.append("Alias", $("#txtAlias").val());
+            fdata.append("Featured", $("#Item_Featured").val());
+            $.ajax({
+                type: "POST",
+                url: "/Admin/CategoriesAblums/UPloadFiles",
+                contentType: false,
+                processData: false,
+                data: fdata,
+                success: function (message) {
+                    var url = '@Url.Action("Index")';
+                    window.location.href = url;
+                },
+                error: function () {
+                    alert("There was error uploading files!");
+                }
+            });
+        });
+        $("#tbAlbums tbody").on("click", ".ibtnDelEdit", function (event) {
+            var Id = $(this).attr('id');
+            removeFilesEdit(Id);
+            $(this).closest("tr").remove();
+        });
+    });
+</script>
+
+@section Scripts{
+    <script src="~/lib/ckeditor/ckeditor.js"></script>
+    <script src="~/lib/ckeditor/adapters/jquery.js"></script>
+   
+    <script>
+        function openCustomRoxy() {
+            $('#roxyCustomPanel').modal('show');
+        }
+        function closeCustomRoxy() {
+            $('#roxyCustomPanel').modal('hide');
+        }
+    </script>
+
+}

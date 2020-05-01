@@ -1,0 +1,56 @@
+﻿@using API.Areas.Admin.Models.CategoriesAblums;
+@using API.Areas.Admin.Models.Ablums;
+@{
+
+    CategoriesAblumsModel data = new CategoriesAblumsModel() { SearchData = new SearchCategoriesAblums() };
+    data.ListItemsAlbums = AblumsService.GetListPagination(new SearchAblums());
+    List<CategoriesAblums> ListCatAblum = new List<CategoriesAblums>();
+    ListCatAblum = CategoriesAblumsService.GetList();
+
+    for (int i = 0; i < ListCatAblum.Count(); i++)
+    {
+        List<Ablums> tmp = new List<Ablums>();
+        for (int j = 0; j < data.ListItemsAlbums.Count(); j++)
+        {
+            if (ListCatAblum[i].Id == data.ListItemsAlbums[j].CatId)
+            {
+                tmp.Add(data.ListItemsAlbums[j]);
+            }
+        }
+        ListCatAblum[i].ListItemsAblums = tmp;
+    }
+
+    data.ListItems = ListCatAblum;
+
+}
+
+
+    <div class="row">
+
+        @for (int i = 0; i < data.ListItems.Count(); i++)
+        {
+
+            @if (data.ListItems[i].ListItemsAblums != null && data.ListItems[i].ListItemsAblums.Count() > 0)
+            {
+                <div class="gallery col-lg-3">
+                    <div class="card rounded-0 border-0">
+                        <a href="@data.ListItems[i].ListItemsAblums[0].LinkImg" rel="prettyPhoto[gallery_@data.ListItems[i].Id]">
+                            <img width="255px" height="160px" src="@data.ListItems[i].ListItemsAblums[0].LinkImg" class="card-img-top" alt="@data.ListItems[i].ListItemsAblums[0].Title" />
+                        </a>
+                        @if (data.ListItems[i].ListItemsAblums.Count() > 1)
+                        {
+                            for (int j = 1; j < data.ListItems[i].ListItemsAblums.Count(); j++)
+                            {
+                                <a href="@data.ListItems[i].ListItemsAblums[j].LinkImg" rel="prettyPhoto[gallery_@data.ListItems[i].Id]" title="@data.ListItems[i].ListItemsAblums[j].Title"></a>
+                            }
+                        }
+                        <div class="card-body">
+                            <a href="@data.ListItems[i].ListItemsAblums[0].LinkImg" rel="prettyPhoto[gallery_@data.ListItems[i].Id]" class="card-title text-justify">@data.ListItems[i].ListItemsAblums[0].Title</a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        }
+    </div>
+

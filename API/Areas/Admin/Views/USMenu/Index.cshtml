@@ -1,0 +1,85 @@
+﻿@model API.Areas.Admin.Models.USMenu.USMenuModel
+@{
+    Layout = "_layoutAdmin";
+    ViewData["Title"] = "Chức năng";
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+
+<div class="card">
+    <div class="card-header">
+
+        <h4><i class="fas fa-table"></i> Danh mục chức năng</h4>
+    </div>
+    <div class="card-body">
+        <partial name="_PartialMsgInfoAdmin" />
+        <div class="row">
+
+            <div class="col-lg-12">
+
+                <table class="table table-bordered table-striped table-hover ">
+                    <thead>
+                        <tr>
+                            <th width="50px" class="text-center">STT</th>
+                            <th width="200px">Tên chức năng</th>
+                            <th >Đường dẫn</th>
+                            <th width="80px">Thứ Tự</th>                           
+                            <th class="text-center" width="120px">Trạng Thái</th>                           
+                            <th width="130px" class="btn-contain">
+                                <a asp-controller="@ControllerName" asp-action="SaveItem" class="btn btn-primary">THÊM MỚI</a>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model.ListItems == null || Model.ListItems.Count() == 0)
+                        {
+                        <tr>
+                            <td colspan="5" class="text-center">
+                                <div *ngIf="flagListitems==1" class="lds-dual-ring"></div>
+                                <label *ngIf="flagListitems==2">Không có dữ liệu!</label>
+                            </td>
+                        </tr>
+                        }
+                        else
+                        {
+                            for (int i = 0; i < Model.ListItems.Count(); i++)
+                            {
+                        <tr>
+                            <td width="50px" class="text-center">@(i + 1)</td>
+                            <td>@Model.ListItems[i].TreeMenu</td>
+                            <td>@Model.ListItems[i].PathName</td>
+                            <td>@Model.ListItems[i].SortOrder</td>                            
+                             
+                            <td class="text-center">
+                                @if (@Model.ListItems[i].Status)
+                                {
+                                    <span class="fas fa-check-circle" aria-hidden="true"></span>
+                                }
+                                else
+                                {
+                                    <span class="far fa-times-circle" aria-hidden="false"></span>
+                                }
+                            </td>
+                            <td>
+                                <ul class="list-inline action">
+                                    <li class="list-inline-item"><a asp-controller="@ControllerName" asp-action="SaveItem" asp-route-id="@Model.ListItems[i].Ids"><i class="fa fa-edit"></i>Sửa</a></li>
+                                    <li class="list-inline-item"><a data-toggle="modal" data-target="#DeleteModal" data-whatever="@Model.ListItems[i].Title" data-ids="@Model.ListItems[i].Ids"><i class="fa fa-trash"></i>Xóa</a></li>
+                                </ul>
+                            </td>
+                        </tr>
+                            }
+                        }
+
+                    </tbody>
+
+                </table>
+                <form asp-controller="@ControllerName" asp-action="DeleteItem" id="AjaxDeleteForm"></form>
+            </div>
+            <div class="col-lg-12">
+                @await Html.PartialAsync("_PartialPagination",Model.Pagination)
+            </div>
+        </div>
+    </div>
+</div>
+
+

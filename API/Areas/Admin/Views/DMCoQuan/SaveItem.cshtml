@@ -1,0 +1,107 @@
+﻿@model API.Areas.Admin.Models.DMCoQuan.DMCoQuanModel
+@{
+    if (Model.Item.Id == 0)
+    {
+        ViewData["Title"] = "Thêm mới Cơ Quan";
+    }
+    else
+    {
+        ViewData["Title"] = "Cập nhật Cơ Quan";
+    }
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+
+
+<div class="card">
+    <div class="card-header">
+        <h4>@ViewData["Title"]</h4>
+    </div>
+    <div class="card-body">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <partial name="_PartialMsgInfoAdmin" />
+        <form asp-controller="@ControllerName" asp-action="SaveItem" method="post">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Item.Title">Tên <sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control" asp-for="Item.Title" name="Title">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Item.Code">Mã <sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control" asp-for="Item.Code" name="Code">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Item.ParentId">Cơ quan cha <sup class="text-danger"> (*)</sup></label>
+                        <select asp-for="Item.ParentId" name="ParentId" class="form-control" asp-items="Model.ListItemsCoQuan"></select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="Item.CategoryId">Loại cơ quan <sup class="text-danger"> (*)</sup></label>
+                        <select asp-for="Item.CategoryId" name="CategoryId" class="form-control" asp-items="Model.ListItemsLoaiCoQuan"></select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label>Trạng Thái</label>
+                    <div class="form-group">
+
+                        <div class="custom-control custom-checkbox custom-control-inline">
+                            <input asp-for="Item.Status" name="Status" class="custom-control-input" />
+                            <label class="custom-control-label" asp-for="Item.Status"> Trạng Thái</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Item.IdLayout">Giao Diện <sup class="text-danger"> (*)</sup></label>
+                        <select asp-for="Item.IdLayout" name="IdLayout" class="form-control" asp-items="Model.ListItemsLayout"></select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Item.Title_1">Tiêu đề 1 <sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control" asp-for="Item.Title_1" name="Title_1">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Item.Title_2">Tiêu đề 2 <sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control" asp-for="Item.Title_2" name="Title_2">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Item.Title_3">Tiêu đề 3 <sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control" asp-for="Item.Title_3" name="Title_3">
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            <div class="form-group">
+                <label asp-for="Item.Description">Mô tả</label>
+                <textarea asp-for="Item.Description" name="Description" class="form-control"></textarea>
+            </div>
+            
+
+            <input type="submit" class="btn btn-primary" name="SaveItem" value="Lưu" />
+            <a class="btn btn-info" asp-controller="@ControllerName" asp-action="Index">Quay Lại</a>
+            <input type="hidden" class="form-control" asp-for="Item.Id" name="Id">
+            <input type="hidden" class="form-control" asp-for="Item.Ids" name="Ids">
+            <input type="hidden" class="form-control" asp-for="Item.CategoryId" name="CategoryId">
+
+        </form>
+    </div>
+</div>
+

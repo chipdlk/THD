@@ -1,0 +1,204 @@
+﻿@model API.Areas.Admin.Models.DuAn.DuAnModel
+@{
+
+
+    ViewData["Title"] = "CSDL Khoa học công nghệ";
+    @if (Model.SearchData.Loai == 1 && Model.SearchData.TrangThai == 1)
+    {
+        ViewData["Title"] = "Đề tài KHCN [Đang thực hiện]";
+    }
+    else if (Model.SearchData.Loai == 1 && Model.SearchData.TrangThai == 2)
+    {
+        ViewData["Title"] = "Đề tài KHCN [Đã có kết quả]";
+    }
+    else if (Model.SearchData.Loai == 2)
+    {
+        ViewData["Title"] = "Dự ánKHCN";
+    }
+
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+
+}
+
+<div class="navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-inline  nlist">
+                    <li>
+                        <a href="/">Trang chủ</a> <i class="fa fa-angle-right"></i>
+                        <a href="#">@ViewData["Title"]</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="PageDetail">
+
+                <div class="greyDiv searchDiv mb-3">
+                    <form asp-controller="@ControllerName" asp-action="Index" method="GET">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" asp-for="Item.Ten" name="Ten" placeholder="Tên đề tài/dự án KHCN">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <select asp-for="SearchData.Loai" name="Loai" class="form-control" asp-items="Model.ListItemsLoai"></select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <select asp-for="SearchData.TrangThai" name="TrangThai" class="form-control" asp-items="Model.ListItemsTrangThai"></select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-xs-12">
+                                <div class="form-group">
+                                    <div>
+                                        <input type="submit" class="btn btn-primary" value="Tìm kiếm" />
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                @if (Model.SearchData.TrangThai == 1)
+                {
+                    <table class="table table-bordered myTable" style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th style="vertical-align:middle">Tên</th>
+                                <th style="vertical-align:middle">Tổ chức chủ trì</th>
+                                <th style="vertical-align:middle">Chủ nhiệm</th>
+                                <th style="vertical-align:middle">
+                                    Mục tiêu và nội dung nghiên cứu chính
+                                </th>
+                                <th style="vertical-align:middle">Lĩnh vực nghiên cứu</th>
+                                <th style="vertical-align:middle">PP nghiên cứu</th>
+                                <th style="vertical-align:middle" valign="middle">Kết quả dự kiến</th>
+                                <th style="vertical-align:middle">
+                                    Thời gian bắt đầu/ kết thúc
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.ListItems == null || Model.ListItems.Count() == 0)
+                            {
+                                <tr>
+                                    <td colspan="8">Không có dữ liệu</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                for (int i = 0; i < Model.ListItems.Count(); i++)
+                                {
+                                    <tr>
+                                        <td>@Model.ListItems[i].Ten</td>
+                                        <td>@Model.ListItems[i].KetQuaThucHien</td>
+                                        <td>@Model.ListItems[i].ChuNhiem</td>
+                                        <td>@Model.ListItems[i].MucTieu</td>
+                                        <td>@Model.ListItems[i].LinhVuc</td>
+                                        <td>@Model.ListItems[i].PhuongPhap</td>
+                                        <td class="text-center">
+                                            @if (!string.IsNullOrEmpty(@Model.ListItems[i].FileKetQua))
+                                            {
+                                                <a href="@Model.ListItems[i].FileKetQua" target="_blank"> <i class="fa fa-download" style="margin-right:7px"></i></a>
+                                            }
+
+                                        </td>
+                                        <td>
+                                            <span class="sm">Từ: @Model.ListItems[i].ThoiGianBatDau.ToString("dd/MM/yyyy")</span>
+                                            <br />
+                                            <span class="sm">Đến: @Model.ListItems[i].ThoiGianKetThuc.ToString("dd/MM/yyyy")</span>
+                                        </td>
+
+                                    </tr>
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <table class="table table-bordered myTable" style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th style="vertical-align:middle">Tên</th>
+                                <th style="vertical-align:middle">Tổ chức chủ trì</th>
+                                <th style="vertical-align:middle">Chủ nhiệm</th>
+                                <th style="vertical-align:middle">
+                                    Mục tiêu
+                                </th>
+                                <th style="vertical-align:middle" valign="middle">Kết quả thực hiện</th>
+                                <th style="vertical-align:middle">
+                                    Thời gian bắt đầu/ kết thúc
+                                </th>
+                                <th style="vertical-align:middle">Kinh phí thực hiện</th>
+
+
+                            
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.ListItems == null || Model.ListItems.Count() == 0)
+                            {
+                                <tr>
+                                    <td colspan="8">Không có dữ liệu</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                for (int i = 0; i < Model.ListItems.Count(); i++)
+                                {
+                                <tr>
+                                    <td>@Model.ListItems[i].Ten</td>
+                                    <td>@Model.ListItems[i].KetQuaThucHien</td>
+                                    <td>@Model.ListItems[i].ChuNhiem</td>
+                                    <td>@Model.ListItems[i].MucTieu</td>
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(@Model.ListItems[i].FileKetQua))
+                                        {
+                                            <a href="@Model.ListItems[i].FileKetQua" target="_blank"> <i class="fa fa-download" style="margin-right:7px"></i></a>
+                                        }
+
+                                    </td>
+                                    <td>
+                                        <span class="sm">Từ: @Model.ListItems[i].ThoiGianBatDau.ToString("dd/MM/yyyy")</span>
+                                        <br />
+                                        <span class="sm">Đến: @Model.ListItems[i].ThoiGianKetThuc.ToString("dd/MM/yyyy")</span>
+                                    </td>
+                                    <td>@Model.ListItems[i].KinhPhi</td>
+                                </tr>
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+                }
+
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    @await Html.PartialAsync("_PartialPagination", Model.Pagination)
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+

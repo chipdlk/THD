@@ -1,0 +1,55 @@
+﻿@using API.Areas.Admin.Models.Menus;
+@using Microsoft.AspNetCore.Http
+@{
+    int IdCoQuan = 1;
+    if (Context.Session.GetString("IdCoQuan") != null && Context.Session.GetString("IdCoQuan") != "") {
+        IdCoQuan = int.Parse(Context.Session.GetString("IdCoQuan"));
+    }
+    var ListMenu = MenusService.GetListByParrent(0,IdCoQuan);
+    string css_class = "";
+}
+<div class="stellarnav">
+
+    <ul class="nav">
+       
+        @for (int i = 0; i < ListMenu.Count(); i++)
+        {
+            if (i == 0)
+            {
+                css_class = "first";
+            }
+            else if (i == (ListMenu.Count() - 1))
+            {
+                css_class = "last";
+            }
+            else {
+                css_class = "";
+            }
+            if (ListMenu[i].ChildCount > 0)
+            {
+                @await Html.PartialAsync("_PartialMenuChild", ListMenu[i]);
+            }
+            else
+            {
+                if (ListMenu[i].Link != null)
+                {
+                    <li><a class="@css_class" href="@(ListMenu[i].Link)"> <i class="@(ListMenu[i].Icon)"></i>@(ListMenu[i].Title)</a></li>
+                }
+                else if (ListMenu[i].ArticleId != 0)
+                {
+                    <li><a class="@css_class" asp-controller="Articles" asp-action="Detail" asp-route-id="@ListMenu[i].ArticleId"  asp-route-alias="@ListMenu[i].Alias"> <i class="@(ListMenu[i].Icon)"></i>@(ListMenu[i].Title) </a></li>
+                }
+                else if (ListMenu[i].CatId != 0)
+                {
+                    <li><a class="@css_class" asp-controller="Articles" asp-action="GetByCat" asp-route-id="@ListMenu[i].CatId"  asp-route-alias="@ListMenu[i].Alias"> <i class="@(ListMenu[i].Icon)"></i>@(ListMenu[i].Title)</a></li>
+                }
+                else
+                {
+                    <li><a class="@css_class" href="#"> <i class="@(ListMenu[i].Icon)"></i>@(ListMenu[i].Title)</a></li>
+                }
+            }
+        }
+               
+
+    </ul>
+</div><!-- .stellarnav -->

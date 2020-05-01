@@ -1,0 +1,18 @@
+﻿@model API.Areas.Admin.Models.Articles.ArticlesModel
+
+<div class="other-list" style="display:block">
+    <h2>Các tin khác</h2>
+    <ul>
+        @if (Model.ListItems == null || Model.ListItems.Count() == 0)
+        {
+        <li>Chưa có bài đăng</li>
+        }
+        else
+        {
+            for (int i = 0; i < Model.ListItems.Count(); i++)
+            {
+                <li><a asp-controller="Articles" asp-action="Detail" asp-route-id="@Model.ListItems[i].Id"  asp-route-alias="@Model.ListItems[i].Alias">@(Model.ListItems[i].Title)</a></li>
+            }
+        }
+    </ul>
+</div>

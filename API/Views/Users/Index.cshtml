@@ -1,0 +1,60 @@
+﻿@model API.Areas.Admin.Models.USUsers.USUsersModel
+@{
+    ViewData["Title"] = "Đội Ngũ";
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+<link rel="stylesheet" href="~/css/animate.css">
+<div class="col-md-12">
+    <ul class="list-inline navigation nlist">
+        <li>
+            <a href="/">Trang chủ</a>
+            <i class="fa fa-angle-right"></i> @ViewData["Title"]
+        </li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <table class="table list-users">
+        <thead>
+            <tr>
+                <th>Họ Tên</th>
+                <th>Chức Vụ</th>
+                <th>Phòng Ban / Khoa</th>
+                <th>Chuyên Ngành</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.ListItems != null || Model.ListItems.Count() > 0)
+            {
+                for (int i = 0; i < Model.ListItems.Count(); i++)
+                {
+                    <tr class="wow fadeInDown">
+                        <td>
+                            <a asp-controller="Users" asp-action="Detail" asp-route-id="@Model.ListItems[i].Id" asp-route-alias="@Model.ListItems[i].UserCode">
+                                <img style="height:50px;margin-right: 20px;" src="~/images/employees-male.jpg" alt="@Model.ListItems[i].FullName" class="rounded-circle">
+                                @Model.ListItems[i].FullName
+                            </a>
+                        </td>
+                        <td>@Model.ListItems[i].TenChucVu</td>
+                        <td>@Model.ListItems[i].TenCoQuan</td>
+                        <td>@Model.ListItems[i].Specialize</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+    @section Scripts{
+        <script src="~/js/wow.min.js"></script>
+        <script>
+            wow = new WOW(
+                {
+                    animateClass: 'animated',
+                    offset: 100,
+                    callback: function (box) {
+                        console.log("WOW: animating <" + box.tagName.toLowerCase() + ">")
+                    }
+                }
+            );
+            wow.init();
+        </script>
+    }

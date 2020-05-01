@@ -1,0 +1,64 @@
+﻿@using API.Areas.Admin.Models.Products;
+@using API.Areas.Admin.Models.ProductsCategories;
+@{
+    SearchProducts dto = new SearchProducts() { CurrentPage = 1, ItemsPerPage = 6, CatId = 1, IdCoQuan = 1 };
+    var listService = ProductsService.GetListPagination(dto, "");
+
+    var catService = ProductsCategoriesService.GetItem(1);
+}
+
+
+<div class="cat-item">
+    <div class="header">
+        <h4>
+            <a asp-controller="Products" asp-action="Index" asp-route-id="@catService.Id" asp-route-alias="@catService.Alias" title="@catService.Title">
+                @catService.Title
+            </a>
+        </h4>
+    </div>
+    <div class="body">
+        <div class="row itemProduct">
+            @for (int i = 0; i < listService.Count(); i++)
+            {
+                <div class="col-lg-4 col-md-12 col-sm-6 col-12">
+                    <div class="item">
+                        <div class="khungAnh">
+                            <a class="khungAnhCrop" asp-controller="Products" asp-action="Detail" asp-route-id="@listService[i].Id" asp-route-alias="@listService[i].Alias" title="@listService[i].Title">
+                                @if (listService[i].Images == null || @listService[i].Images == "" || listService[i].Images.ToLower() == "/cms/content/tintuc/")
+                                {
+                                    <img src="~/images/noimage.gif" alt="@listService[i].Title" class="tall">
+                                }
+                                else
+                                {
+                                    <img alt="@listService[i].Title" class="tall" src="/Home/ResizeImage?url=@listService[i].Images&width=600">
+                                }
+                            </a>
+                        </div>
+
+                        <p class="name">
+                            <a asp-controller="Products" asp-action="Detail" asp-route-id="@listService[i].Id" asp-route-alias="@listService[i].Alias" title="@listService[i].Title">
+                                @API.Models.StringUtilities.Truncate(@listService[i].Title, 70)
+                            </a>
+                        </p>
+                        <p class="ovv">
+                            @if (!string.IsNullOrEmpty(@listService[i].IntroText))
+                            {
+                                @API.Models.StringUtilities.Truncate(@listService[i].IntroText, 110)
+                            }
+
+                        </p>
+                        <p class="regist text-center">
+                            <a asp-controller="Products" asp-action="Detail" asp-route-id="@listService[i].Id" asp-route-alias="@listService[i].Alias" title="@listService[i].Title">
+                                Đăng ký
+                            </a>
+                        </p>
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+

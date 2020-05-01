@@ -1,0 +1,117 @@
+﻿@using Microsoft.AspNetCore.Http
+@{
+    int IdCoQuan = int.Parse(Context.Session.GetString("IdCoQuan"));
+    string TenCoQuan = Context.Session.GetString("TenCoQuan");
+    int IdGroup = int.Parse(Context.Session.GetString("IdGroup"));
+    int? IdMenu = 0;
+    if (Context.Session.GetInt32("IdMenu") != null)
+    {
+        IdMenu = Context.Session.GetInt32("IdMenu");
+    }
+
+}
+<!-- Sidebar -->
+<ul class="sidebar navbar-nav">
+
+    <li class="nav-item dropdown @if (IdMenu == 2) { @("show"); }">
+        <a onclick="UpdateSessionMenu(2)" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="@if (IdMenu == 2) {@("true");} else {@("false")}">
+            <i class="fas fa-book"></i>
+            <span>Tin tức</span>
+        </a>
+        <div class="dropdown-menu @if (IdMenu == 2) { @("show"); }">
+
+            <a class="dropdown-item" asp-controller="Articles" asp-action="Index">Tin tức</a>
+
+            @if (IdGroup == 1)
+            {
+                <a class="dropdown-item" asp-controller="CategoriesArticles" asp-action="Index">Danh mục tin tức</a>
+            }
+            <a class="dropdown-item" asp-controller="Documents" asp-action="Index">Văn Bản</a>
+            <a class="dropdown-item" asp-controller="Report" asp-action="Index">Thống kê</a>
+
+            @*<a class="dropdown-item" asp-controller="DuAn" asp-action="Index">CSDL KHCN</a>*@
+
+
+        </div>
+    </li>
+
+
+    @*<li class="nav-item dropdown @if (IdMenu == 5) { @("show"); }">
+        <a onclick="UpdateSessionMenu(5)" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="@if (IdMenu ==5) {@("true");} else {@("false")}">
+            <i class="fab fa-product-hunt"></i>
+            <span>Sản phẩm</span>
+        </a>
+        <div class="dropdown-menu @if (IdMenu ==5) { @("show"); }">
+
+            <a class="dropdown-item" asp-controller="Products" asp-action="Index">Sản phẩm</a>
+
+            @if (IdGroup == 1)
+            {
+                <a class="dropdown-item" asp-controller="ProductsCategories" asp-action="Index">Danh mục sản phẩm</a>
+            }
+            <a class="dropdown-item" asp-controller="ProductsOrder" asp-action="Index">Đơn hàng</a>
+
+
+        </div>
+    </li>*@
+
+
+
+
+
+    @if (IdGroup == 1)
+    {
+        <li class="nav-item dropdown @if (IdMenu == 3) { @("show"); }">
+            <a onclick="UpdateSessionMenu(3)" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="@if (IdMenu == 3) {@("true");} else {@("false")}">
+                <i class="fas fa-plug"></i>
+                <span>Tiện ích</span>
+            </a>
+            <div class="dropdown-menu @if (IdMenu == 3) { @("show"); }">
+                <a class="dropdown-item" asp-controller="Banners" asp-action="Index">Banner</a>
+                <a class="dropdown-item" asp-controller="BannersCategories" asp-action="Index">Thể Loại Banner</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" asp-controller="Contacts" asp-action="Index" asp-route-Type="1">Hỏi đáp</a>
+                @*<a class="dropdown-item" asp-controller="Reviews" asp-action="Index">Cảm nhận khách hàng</a>*@
+                @*<a class="dropdown-item" asp-controller="Events" asp-action="Index">Chương trình khám</a>*@
+                @*<a class="dropdown-item" asp-controller="CategoriesAblums" asp-action="Index">Allbum</a>
+                    <a class="dropdown-item" asp-controller="NewsLetter" asp-action="Index">Đăng ký nhận Tin</a>*@
+                @*<a class="dropdown-item" asp-controller="Videos" asp-action="Index">Video</a>*@
+            </div>
+        </li>
+
+        @if (IdGroup == 1)
+        {
+            <li class="nav-item dropdown @if (IdMenu == 1) { @("show"); }">
+                <a onclick="UpdateSessionMenu(1)" class="nav-link dropdown-toggle" href="#" id="danhmucDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="@if (IdMenu == 1) {@("true");} else {@("false")}">
+                    <i class="fas fa-th-list"></i>
+                    <span>Danh mục</span>
+                </a>
+                <div class="dropdown-menu @if (IdMenu == 1) { @("show"); }" aria-labelledby="danhmucDropdown">
+                    @*<a class="dropdown-item" asp-controller="DMChucVu" asp-action="Index">Chức Vụ</a>
+                        <a class="dropdown-item" asp-controller="DMTinhThanh" asp-action="Index">Tỉnh Thành</a>
+                        <a class="dropdown-item" asp-controller="DMQuanHuyen" asp-action="Index">Quận Huyện</a>
+                        <a class="dropdown-item" asp-controller="DMPhuongXa" asp-action="Index">Phường Xã</a>
+                        <a class="dropdown-item" asp-controller="DMCoQuan" asp-action="Index">Cơ Quan</a>
+                        <a class="dropdown-item" asp-controller="DMLoaiCoQuan" asp-action="Index">Loại Cơ Quan</a>
+                        <div class="dropdown-divider"></div>*@
+                    <h6 class="dropdown-header">Văn bản</h6>
+                    <a class="dropdown-item" asp-controller="DocumentsCategories" asp-action="Index">Loại Văn bản</a>
+                    <a class="dropdown-item" asp-controller="DocumentsType" asp-action="Index">Thể Loại Văn bản</a>
+                    <a class="dropdown-item" asp-controller="DocumentsField" asp-action="Index">Lĩnh Vực Văn bản</a>
+                </div>
+            </li>
+        }
+
+        <li class="nav-item dropdown @if (IdMenu == 4) { @("show"); }">
+            <a onclick="UpdateSessionMenu(4)" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="@if (IdMenu == 4) {@("true");} else {@("false")}">
+                <i class="fas fa-cog"></i>
+                <span>Hệ Thống</span>
+            </a>
+            <div class="dropdown-menu @if (IdMenu == 4) { @("show"); }">
+                <a class="dropdown-item" asp-controller="Menus" asp-action="Index">Quản lý menu</a>
+                <a class="dropdown-item" asp-controller="USUsers" asp-action="Index">Người Dùng</a>
+                <a class="dropdown-item" asp-controller="Home" asp-action="SaveItem">Cấu hình chung</a>
+            </div>
+        </li>
+    }
+</ul>

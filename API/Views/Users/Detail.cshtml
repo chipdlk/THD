@@ -1,0 +1,63 @@
+﻿@model API.Areas.Admin.Models.USUsers.USUsersModel
+@{
+    ViewData["Title"] = "Đội Ngũ - "+@Model.Item.FullName;
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+    <div class="col-md-12">
+        <ul class="list-inline navigation nlist">
+            <li>
+                <a href="/">Trang chủ</a>
+                <a asp-controller="Users" asp-action="Index"><i class="fa fa-angle-right"></i> Đội ngũ</a>
+                <i class="fa fa-angle-right"></i> @Model.Item.FullName
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-lg-12">
+        <div class="row" id="user-detail">
+            <div class="col-lg-4">
+                <div class="card">
+                    <img src="~/images/profile-bg.jpg" class="card-img-top" alt="...">
+                    <div class="card-body text-center">
+                        <div class="pro-img"><img src="~/images/employees-male.jpg" style="width:128px;" alt="@Model.Item.FullName" class="rounded-circle"></div>
+
+                        <h2>@Model.Item.FullName</h2>
+                        <h4>@Model.Item.Email</h4>
+                        <p>@Model.Item.TenChucVu</p>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="col-lg-8">
+                <table class="table table-bordered">
+                    <tr>
+                        <th width="200px">Họ Tên</th>
+                        <td>@Model.Item.FullName</td>
+                    </tr>
+                    <tr>
+                        <th width="200px">Chức Vụ</th>
+                        <td>@Model.Item.TenChucVu</td>
+                    </tr>
+                    <tr>
+                        <th width="200px">Phòng Khoa/Ban</th>
+                        <td>@Model.Item.TenCoQuan</td>
+                    </tr>
+                    <tr>
+                        <th width="200px">Email</th>
+                        <td>@Model.Item.Email</td>
+                    </tr>
+                    <tr>
+                        <th width="200px">Chuyên môn</th>
+                        <td>@Model.Item.Specialize</td>
+                    </tr>
+                    <tr>
+                        <th width="200px">Tiểu sử</th>
+                        <td>@Html.Raw(Model.Item.Description)</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </div>

@@ -1,0 +1,199 @@
+﻿@model API.Areas.Admin.Models.ProductsOrderDetail.ProductsOrderDetailModel
+
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+    var chk = int.Parse(TempData["CART"].ToString());
+}
+
+<div class="navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-inline  nlist">
+                    <li>
+                        <a href="/">Trang chủ</a>
+                        <i class="fa fa-angle-right"></i>
+                        <a asp-controller="Contacs" asp-action="Index">Giỏ hàng</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container">
+
+    @if (chk == 1)
+    {
+        <form asp-controller="ProductsOrder" asp-action="Index" method="post" id="myForm">
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-bordered ProductsOrderTbl">
+                        <thead>
+                            <tr>
+                                <th style="width:50px">
+
+                                </th>
+                                <th>
+                                    Tên sản phẩm
+                                </th>
+                                <th width="150px" class="text-center">
+                                    Giá
+                                </th>
+                                <th width="100px" class="text-center">
+                                    Số lượng
+                                </th>
+                                <th class="text-center">
+                                    Tổng
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ var i = 0;}
+                            @foreach (var item in Model.ListItems)
+                            {
+                                <tr>
+                                    <td class="text-center">
+                                        <input type="hidden" class="txtProductId" name="listUpdate[@i].ProductId" value="@item.ProductId" />
+                                        <a href="#" class="text-danger removeItem"> <i class="fas fa-trash"></i></a>
+                                    </td>
+                                    <td>
+
+                                        <a asp-controller="Products" asp-action="Detail" asp-route-id="@item.ProductId" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(item.Name)" title="@item.Name">
+                                            @item.Name
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        @string.Format("{0:#,##0}", item.Price)
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="number" class="form-control text-center txtQuantity" name="listUpdate[@i].Quantity" value="@item.Quantity" />
+
+                                    </td>
+                                    <td class="text-center">
+                                        @string.Format("{0:#,##0}", item.Price * item.Quantity)
+                                    </td>
+                                </tr>
+                                i = i + 1;
+                            }
+                        </tbody>
+                    </table>
+
+                    <div id="txtErr" class="mt-1 mb-1">
+                        @if (TempData["MessageSuccess"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                @TempData["MessageSuccess"]
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        }
+
+                        @if (TempData["MessageError"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                @TempData["MessageError"]
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2 mb-3">
+                <div class="col-md-12 col-lg-6">
+                    @if (Model.ListItems.Count != null && Model.ListItems.Count > 0)
+                    {
+                        <ul class="list-inline">
+                            <li class="list-inline-item">
+                                <a href="#" id="btnUpdatecart" class="btn btn-warning"> <i class="fas fa-save mr-1"></i> Cập nhật giỏ hàng</a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a asp-controller="ProductsOrder" asp-action="CheckOut" class="btn btn-primary" title="Tiến hành đặt hàng">
+                                    <i class="fas fa-shopping-bag mr-1"></i> Đặt hàng
+                                </a>
+                            </li>
+                        </ul>
+                    }
+                </div>
+                <div class="col-md-12 col-lg-6">
+                    @{
+                        decimal total = 0;
+                        @foreach (var item in Model.ListItems)
+                        {
+                            total = total + (decimal)(item.Quantity * item.Price);
+                        }
+                        <h5 class="text-right"><strong>Tổng đơn hàng: <span id="SumTotal">@string.Format("{0:#,##0}", total)</span></strong></h5>
+                    }
+                </div>
+            </div>
+        </form>
+    }
+    else
+    {
+        <div class="jumbotron">
+            <h3 class="display-5">Giỏ hàng rỗng!</h3>
+            <p>Vui lòng chọn thêm sản phẩm.</p>
+            <hr class="my-4">
+          
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="/" role="button">Quay lại trang chủ</a>
+            </p>
+        </div>
+    }
+</div>
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+
+
+        $(".removeItem").click(function () {
+            var ProductId = $(this).parent().find(".txtProductId").val();
+            var row = $(this).parent().parent();
+              return $.ajax({
+                            type: "POST",
+                            url: "/ProductsOrder/RemoveItemCart?ProductId=" + ProductId,
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {                                
+                                window.location.reload();
+                            },
+                            error: function () {
+                                window.location.reload();
+                            }
+                        });
+        })
+
+
+        $("#btnUpdatecart").click(function () {
+            var check =1;
+            $('.ProductsOrderTbl tbody tr').each(function (index, value) {
+                var ProductId = $(this).find(".txtProductId").val();
+                var Quantity = $(this).find(".txtQuantity").val();
+                if (Quantity == null || Quantity <= 0) {
+                        check=0                      
+                    }
+                    
+            });
+            if (check == 0) {
+                $("#txtErr").html("<div class='alert alert-danger'>Số lượng phải lớn hơn 0.</div>");
+              
+            } else {
+                $("#myForm").submit();
+            }
+        })
+
+    })
+</script>
+
+
+

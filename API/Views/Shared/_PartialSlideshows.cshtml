@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Http
+@{
+    var ListItems = API.Areas.Admin.Models.Banners.BannersService.GetListByCat(1);
+}
+
+@if (ListItems != null && ListItems.Count() > 0)
+{
+    
+    <div id="slide">
+        <ul id="image-gallery" class="gallery list-unstyled cS-hidden">
+            @for (int i = 0; i < ListItems.Count(); i++)
+            {
+                <li>
+                    <a href="@ListItems[i].Link">
+                        <img src="@ListItems[i].Image"  alt="@ListItems[i].Title">
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+
+

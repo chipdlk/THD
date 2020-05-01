@@ -1,0 +1,132 @@
+﻿@model API.Areas.Admin.Models.Videos.VideosModel
+@{
+    if (Model.Item.Id == 0)
+    {
+        ViewData["Title"] = "Thêm mới Video";
+    }
+    else
+    {
+        ViewData["Title"] = "Cập nhật Video";
+    }
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+<style>
+    .modal-content {
+        /* 100% = dialog height, 120px = header + footer */
+        height: 600px;
+        width: 875px;
+    }
+</style>
+<div class="card">
+    <div class="card-header">
+        <h4>Chi tiết Video</h4>
+    </div>
+    <div class="card-body">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <form asp-controller="@ControllerName" asp-action="SaveItem" method="post">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="Item.Title">Tên <sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control" asp-for="Item.Title" name="Title">
+                    </div>
+                </div>
+
+                <div class="col-6">
+
+                    <div class="form-group">
+                        <label asp-for="Item.Link">Link Video</label>
+                        <div class="input-group mb-2 mr-sm-2">
+                            <input type="text" id="FileName_0" class="form-control" asp-for="Item.Link" name="Link">
+                            <div class="input-group-prepend">
+                                <a href="javascript:openCustomRoxy2(0)" class="input-group-text">Chọn File</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <div class="custom-control custom-checkbox custom-control-inline">
+                            <input asp-for="Item.Status" name="Status" class="custom-control-input" />
+                            <label class="custom-control-label" asp-for="Item.Status">Trạng Thái</label>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <div class="custom-control custom-checkbox custom-control-inline">
+                            <input asp-for="Item.Featured" name="Featured" class="custom-control-input" />
+                            <label class="custom-control-label" asp-for="Item.Featured">Nổi bật</label>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Loại Video</label>
+                        <select asp-for="Item.IdType" name="IdType" class="form-control" asp-items="Model.ListItemsType"></select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label>Hình đại diện</label>
+                <br />
+                <img src="@Model.Item.Image" id="customRoxyImage" style="height:100px;">
+                <br />
+                <br />
+                <input type="hidden" id="Item_Images" class="form-control" asp-for="Item.Image" name="Image">
+                <a href="javascript:openCustomRoxy()" type="button" class="btn">Chọn hình</a>
+                <div id="roxyCustomPanel" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <iframe src="/lib/fileman/index.html?integration=custom&langCode=vi" style="width:100%;height:100%" frameborder="0"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="Item.Description">Mô tả</label>
+                <textarea asp-for="Item.Description" name="Description" class="form-control"></textarea>
+            </div>
+
+            <input type="submit" class="btn btn-primary" name="SaveItem" value="Lưu" />
+            <a class="btn btn-danger" asp-controller="@ControllerName" asp-action="Index">Hủy</a>
+            <input type="hidden" class="form-control" asp-for="Item.Id" name="Id">
+            <input type="hidden" class="form-control" asp-for="Item.Ids" name="Ids">
+
+        </form>
+    </div>
+</div>
+
+<div id="roxyCustomPanel2" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content content-set-image">
+            <iframe id="ifrm2" src="" style="width:100%;height:100%" frameborder="0"></iframe>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/lib/ckeditor/ckeditor.js"></script>
+    <script src="~/lib/ckeditor/adapters/jquery.js"></script>
+    <script>
+        var roxyFileman = '/lib/fileman/index.html';
+        function openCustomRoxy2(id) {
+            var roxyFileman2 = '/lib/fileman/index.html?integration=custom_2&langCode=vi&txtFieldId=' + id;
+            $('#ifrm2').attr('src', roxyFileman2)
+            $('#roxyCustomPanel2').modal('show');
+        }
+        function closeCustomRoxy2() {
+            $('#roxyCustomPanel2').modal('hide');
+        }
+    </script>
+}

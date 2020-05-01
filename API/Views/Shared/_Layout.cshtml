@@ -1,0 +1,127 @@
+﻿@using Microsoft.AspNetCore.Http
+@{
+    var ItemConfig = API.Areas.Admin.Models.SYSParams.SYSParamsService.GetItemConfigByHome();
+
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+    string ActionName = this.ViewContext.RouteData.Values["action"].ToString();
+    if (ViewData["Title"] == null || ViewData["Title"].ToString().Trim() == "")
+    {
+        ViewData["Title"] = ItemConfig.WebsiteName;
+    }
+    var today = DateTime.Now;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/all.min.css" />
+    <link rel="stylesheet" href="~/lib/stellarnav/css/stellarnav.css" />
+    <link rel="stylesheet" href="~/ttudkhcn/css/site.css" />
+    <link rel="stylesheet" href="~/fonts/fonts.css" />
+    <script src="~/lib/jquery/dist/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="/lib/lightslider-master/src/css/lightslider.css" />
+    <script src="/lib/lightslider-master/src/js/lightslider.js"></script>
+
+</head>
+<body>
+
+    <partial name="_CookieConsentPartial" />
+    <!--Header -->
+    <header>
+        <!--top bar -->
+        <div id="topbar">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 col-sm-12 sysdate">
+                        <i> @today.ToString("HH:mm") @API.Models.StringUtilities.dayweekVN(@today.DayOfWeek.ToString()) , Ngày @today.ToString("dd") Tháng @today.ToString("MM") Năm @today.ToString("yyyy")</i>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 text-right">
+                        <ul class="list-inline">                          
+                            <li class="list-inline-item social-icon">
+                                <a href="/sitemap.html"><i class="fas fa-sitemap mr-1"></i><span class="xs-hide">Sơ đồ website</span></a>
+                            </li>
+                            <li class="list-inline-item social-icon">
+                                <a href="mailto:@ItemConfig.Email"><i class="fas fa-envelope mr-1"></i> <span class="xs-hide">Liên hệ</span></a>
+                            </li>
+                           
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="headermain">
+            <div class="container">
+                <div class="row align-self-center">
+                    <div class="col-md-6 col-sm-8">
+                        <a href="/" class="logo">
+                            <img src="~/ttudkhcn/images/logo.png" alt="@ItemConfig.WebsiteName" />
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-sm-4 align-self-center text-right  mb-3">
+                        <ul class="list-inline">
+                            <li class="list-inline-item">
+                                <form id="search-all" method="get" asp-controller="Home" asp-action="Search">
+                                    <div class="search-form">
+                                        <ul class="list-inline">
+                                            <li class="list-inline-item">
+                                                <input type="text" placeholder="Tìm kiếm" class="txtSearch" id="content-search-all" name="keyword" />
+                                            </li>
+                                            <li class="list-inline-item">
+                                                <a onclick="SubmitSearch()" class="search"><i class="fa fa-search" aria-hidden="true"></i></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </form>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="@ItemConfig.Facebook" target="_blank"><i class="fab fa-facebook-f bigIcon"></i></a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="@ItemConfig.Youtube" target="_blank"><i class=" fab fa-youtube bigIcon"></i></a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="mailto:@ItemConfig.Email" target="_blank"><i class="fas fa-envelope bigIcon"></i></a>
+                            </li>
+                           
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </header>
+
+    <!--Menu-->    
+    <div class="container">
+        <div id="MainMenu">
+            <div class="row">
+                <div class="col-12">
+                    <partial name="_PartialMenu" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Body -->
+    <div class="MainContent">
+        @RenderBody()
+    </div>
+
+    <!--Footer -->
+    <partial name="_PartialFooter" />
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/popper.min.js"></script>
+    <script src="~/lib/stellarnav/js/stellarnav.min.js"></script>
+    <script src="~/ttudkhcn/js/site.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

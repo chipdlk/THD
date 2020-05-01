@@ -1,0 +1,99 @@
+﻿@using API.Areas.Admin.Models.Reviews;
+@{
+    var list = API.Areas.Admin.Models.Reviews.ReviewsService.GetListFeatured(5);
+
+}
+
+<section class="greyDiv" id="CamNhan">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="HeadTitle">
+                    <a asp-controller="Reviews" asp-action="Index">
+                        Thông tin tư vấn
+                    </a>
+                    </h2>
+            </div>
+        </div>
+        <div class="row mt-3 mb-3">
+            <div class="col-lg-6 col-md-12 bigcn">
+                @if (list.Count > 0)
+                {
+                    var item = list[0];
+                <div class="camnhan-item">
+                    <p class="name">                        
+                        <a asp-controller="Reviews" asp-action="Detail" asp-route-id="@item.Id" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(item.FullName+"-"+item.Title)">
+                            @item.FullName
+                        </a>
+                    </p>
+                    <p class="job">
+                        @item.Title
+                    </p>
+                    <a asp-controller="Reviews" asp-action="Detail" asp-route-id="@item.Id" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(item.FullName+"-"+item.Title)" class="img">
+                        <img src="@item.Image" alt="@item.FullName" />
+                    </a>
+                    <div class="popup">
+                        <p class="name">
+                            <a asp-controller="Reviews" asp-action="Detail" asp-route-id="@item.Id" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(item.FullName+"-"+item.Title)">@item.FullName</a>
+                        </p>
+                        <p class="job">
+                            @item.Title
+                        </p>
+                        <p class="ovv">
+                            "@API.Models.StringUtilities.Truncate(@item.Introtext, 500)"
+                        </p>
+                        <p>
+                                <a asp-controller="Reviews" asp-action="Detail" asp-route-id="@item.Id" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(item.FullName+"-"+item.Title)" class="btn btn-Site">
+                                    Chi tiết <i class="fas fa-angle-right"></i>
+                                </a>
+                        </p>
+                    </div>
+                </div>
+                }
+
+            </div>
+            <div class="col-lg-6 col-md-12 smallcn">
+                <div class="row">
+                    @if (list.Count > 2)
+                    {
+                        for (int i = 1; i < list.Count; i++)
+                        {
+                            <div class="col-md-6 col-sm-12">
+                                <div class="camnhan-item ">
+                                    <p class="name">
+                                            <a asp-controller="Reviews" asp-action="Detail" asp-route-id="@list[i].Id" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(list[i].FullName+"-"+list[i].Title)">
+                                                @list[i].FullName
+                                            </a>
+                                    </p>
+                                    <p class="job">
+                                        @list[i].Title
+                                    </p>
+                                    <a asp-controller="Reviews" asp-action="Detail" asp-route-id="@list[i].Id" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(list[i].FullName+"-"+list[i].Title)" class="img">
+                                        <img src=" @list[i].Image" alt="@list[i].FullName" />
+                                    </a>
+                                    <div class="popup">
+                                        <p class="name">
+                                            <a asp-controller="Reviews" asp-action="Detail" asp-route-id="@list[i].Id" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(list[i].FullName+"-"+list[i].Title)">@list[i].FullName</a>
+                                        </p>
+                                        <p class="job">
+                                            @list[i].Title
+                                        </p>
+                                        <p class="ovv">
+                                            "@API.Models.StringUtilities.Truncate(@list[i].Introtext, 450)"
+                                        </p>
+                                        <p>
+                                            <a asp-controller="Reviews" asp-action="Detail" asp-route-id="@list[i].Id" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(list[i].FullName+"-"+list[i].Title)" class="btn btn-Site">
+                                                Chi tiết <i class="fas fa-angle-right"></i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,54 @@
+﻿@using API.Areas.Admin.Models.Products;
+@{
+    var ListProduct = ProductsService.GetListHot(0,6);
+}
+
+
+
+
+<div class="cat-item">
+    <div class="header">
+        <h4>
+            <a asp-controller="Products" asp-action="Index" title="Sản phẩm nổi bật">
+                Sản phẩm
+            </a>
+        </h4>
+    </div>
+    <div class="body">
+        <div class="row itemProduct">
+            @for (int i = 0; i < ListProduct.Count(); i++)
+            {
+            <div class="col-lg-4 col-md-12 col-sm-6 col-12">
+                <div class="item hotitem">
+                    <div class="khungAnh">
+                        <a class="khungAnhCrop" asp-controller="Products" asp-action="Detail" asp-route-id="@ListProduct[i].Id" asp-route-alias="@ListProduct[i].Alias" title="@ListProduct[i].Title">
+                            @if (ListProduct[i].Images == null || @ListProduct[i].Images == "" || ListProduct[i].Images.ToLower() == "/cms/content/tintuc/")
+                                {
+                            <img src="~/images/noimage.gif" alt="@ListProduct[i].Title" class="tall">
+                                }
+                                else
+                                {
+                            <img alt="@ListProduct[i].Title" class="tall" src="/Home/ResizeImage?url=@ListProduct[i].Images&width=600">
+                                }
+                        </a>
+                    </div>
+
+                    <p class="name">
+                        <a asp-controller="Products" asp-action="Detail" asp-route-id="@ListProduct[i].Id" asp-route-alias="@ListProduct[i].Alias" title="@ListProduct[i].Title">
+                            @API.Models.StringUtilities.Truncate(@ListProduct[i].Title, 70)
+                        </a>
+                    </p>
+
+                    <p class="catname">
+                        <a asp-controller="Products" asp-action="Index" asp-route-id="@ListProduct[i].CatId" asp-route-alias="@API.Models.StringUtilities.ToNameRewrite(ListProduct[i].Category)" title="@ListProduct[i].Category">
+                            @ListProduct[i].Category
+                        </a>
+                    </p>
+                </div>
+
+            </div>
+            }
+
+        </div>
+    </div>
+</div>

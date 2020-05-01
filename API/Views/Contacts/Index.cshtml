@@ -1,0 +1,127 @@
+﻿@model API.Areas.Admin.Models.Contacts.ContactsModel
+@using Microsoft.Extensions.Options
+@using reCAPTCHA.AspNetCore
+
+
+@inject IOptions<RecaptchaSettings> RecaptchaSettings
+@{
+    ViewData["Title"] = "Gửi câu hỏi";
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+
+
+<div class="navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="list-inline  nlist">
+                    <li>
+                        <a href="/">Trang chủ</a>
+                        <i class="fa fa-angle-right"></i>
+                        <a asp-controller="Contacs" asp-action="Index">Gửi câu hỏi</a>
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-lg-3 col-md-12 col-sm-12">
+            <div class="card mb-4">
+                <img class="card-img-top" src="~/ttudkhcn/images/hoidap.jpg" alt="hỏi đáp">
+                <div class="card-body">
+                    <h5 class="card-title"><strong>Gửi câu hỏi</strong> </h5>
+                    <p class="card-text small-f1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                </div>
+            
+            </div>
+        </div>
+
+        <div class="col-lg-9 col-md-12 col-sm-12">
+
+            <div class="row">
+
+                <div class="col-lg-12">
+                    <div class="white-box mb-4">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <partial name="_PartialMsgInfo" />
+                        <form asp-controller="@ControllerName" asp-action="Index" method="post">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label asp-for="Item.Fullname">Họ Tên <sup class="text-danger"> (*)</sup></label>
+                                        <input type="text" class="form-control" asp-for="Item.Fullname" name="Fullname">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label asp-for="Item.Phone">Điện Thoại </label>
+                                        <input type="text" class="form-control" asp-for="Item.Phone" name="Phone">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label asp-for="Item.Address">Địa Chỉ</label>
+                                        <input type="text" class="form-control" asp-for="Item.Address" name="Address">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label asp-for="Item.Email">Email</label>
+                                        <input type="text" class="form-control" asp-for="Item.Email" name="Email">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label asp-for="Item.Title">Tiêu đề <sup class="text-danger"> (*)</sup></label>
+                                        <input type="text" asp-for="Item.Title" name="Title" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Item.Introtext">Câu Hỏi <sup class="text-danger"> (*)</sup></label>
+                                        <textarea asp-for="Item.Introtext" name="Introtext" class="form-control"></textarea>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-8 col-12">
+                                    <div class="form-group">
+                                        @Html.Recaptcha(RecaptchaSettings?.Value)
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-12 text-right">
+                                    <input type="submit" class="btn btn-primary" name="SaveItem" value="Gửi thông tin" />
+                                    <a class="btn btn-danger" asp-controller="Home" asp-action="Index">Thoát</a>
+                                </div>
+                            </div>
+                            <input type="hidden" class="form-control" asp-for="Item.Id" name="Id">
+                            <input type="hidden" class="form-control" asp-for="Item.Ids" name="Ids">
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+

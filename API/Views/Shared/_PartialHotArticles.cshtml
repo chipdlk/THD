@@ -1,0 +1,56 @@
+﻿@using API.Areas.Admin.Models.Articles;
+@{
+    var ListNews = ArticlesService.GetListHot(0,4);
+}
+
+
+
+@if (ListNews != null || ListNews.Count() > 0)
+{
+    @for (int i = 0; i < ListNews.Count(); i++)
+    {
+        
+<div class="card sideCard mb-4">
+   
+    <a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListNews[i].Id" asp-route-alias="@ListNews[i].Alias"> <img src="@ListNews[i].Images" class="card-img-top" alt="@ListNews[i].Title "></a>
+    <div class="card-body">
+        <h5 class="card-title"><a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListNews[i].Id" asp-route-alias="@ListNews[i].Alias">@ListNews[i].Title   </a></h5>
+        <p class="card-text">@ListNews[i].IntroText</p>
+        <a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListNews[i].Id" asp-route-alias="@ListNews[i].Alias" class="btn btn-primary">Xem chi tiết</a>
+    </div>
+</div>
+    }
+}
+
+
+
+    @*<div class="card mt-1 sideCard mb-1">
+            <div class="card-header">Bài viết nổi bật</div>
+            <div class="card-body">
+
+                @if (ListNews == null || ListNews.Count() == 0)
+                {
+                    <p>Chưa có bài đăng</p>
+                }
+                else
+                {
+                    <div class="first-item">
+                        <a href="#">
+                            <img class="img-fluid" src="@ListNews[0].Images" alt="@ListNews[0].Title"/>
+                        </a>
+
+                        <div>
+                            <a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListNews[0].Id"  asp-route-alias="@ListNews[0].Alias"   class="mt-0 title">@ListNews[0].Title</a>
+                            <p class="intro-text">@ListNews[0].IntroText</p>
+                        </div>
+                    </div>
+                    <ul>
+                        @for (int i = 1; i < ListNews.Count() - 1; i++)
+                        {
+                            <li><a asp-controller="Articles" asp-action="Detail" asp-route-id="@ListNews[i].Id"  asp-route-alias="@ListNews[i].Alias" >@ListNews[i].Title  <time datetime="@ListNews[i].CreatedDate">(@ListNews[i].CreatedDate )</time> </a></li>
+                        }
+                    </ul>
+
+                }
+            </div>
+        </div>*@

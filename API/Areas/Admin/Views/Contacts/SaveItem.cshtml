@@ -1,0 +1,121 @@
+﻿@model API.Areas.Admin.Models.Contacts.ContactsModel
+@{
+    if (Model.Item.Id == 0)
+    {
+        ViewData["Title"] = "Thêm mới " + (Model.Item.Type == 1 ? "thông tin hỏi đáp" : "đặt lịch khám");
+    }
+    else
+    {
+        ViewData["Title"] = "Cập nhật Thông tin " + (Model.Item.Type == 1 ? "thông tin hỏi đáp" : "dặt lịch khám");
+    }
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>@ViewData["Title"]</h4>
+    </div>
+    <div class="card-body">      
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <form asp-controller="@ControllerName" asp-action="SaveItem" method="post">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="Item.Fullname">Họ Tên <sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control" asp-for="Item.Fullname" name="Fullname">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="Item.Phone">Điện Thoại</label>
+                        <input type="text" class="form-control" asp-for="Item.Phone" name="Phone">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="Item.Address">Địa Chỉ</label>
+                        <input type="text" class="form-control" asp-for="Item.Address" name="Address">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="Item.Email">Email</label>
+                        <input type="text" class="form-control" asp-for="Item.Email" name="Email">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+
+                        <div class="custom-control custom-checkbox custom-control-inline">
+                            <input asp-for="Item.Status" name="Status" class="custom-control-input" />
+                            <label class="custom-control-label" asp-for="Item.Status">Đã xem</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    @*<div class="form-group">
+                            <label asp-for="Item.CreatedDate">Ngày Gửi</label>
+                            <input type="text" class="form-control" asp-for="Item.CreatedDate" name="CreatedDate">
+                        </div>*@
+
+                    <div class="form-group">
+                        <label>@(Model.Item.Type == 1 ? "Ngày đăng" : "Thời gian hẹn khám") <sup class="text-danger"> (*)</sup></label>
+                        <div class="input-group date" id="CreatedDate" data-target-input="nearest">
+                            <input type="text" asp-for="Item.CreatedDateShow" name="CreatedDateShow" class="form-control datetimepicker-input" data-target="#CreatedDate" id="CreatedDate" />
+                            <div class="input-group-append" data-target="#CreatedDate" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Item.Title">Tiêu đề</label>
+                <input type="text" asp-for="Item.Title" name="Title" class="form-control"></input>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Item.Introtext">@(Model.Item.Type == 1 ? "Câu hỏi" : "Nội dung")</label>
+                <textarea asp-for="Item.Introtext" name="Introtext" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Item.Description">Mô tả</label>
+                <textarea asp-for="Item.Description" name="Description" class="form-control"></textarea>
+            </div>
+
+            <input type="submit" class="btn btn-primary" name="SaveItem" value="Lưu" />
+            <a class="btn btn-info" asp-controller="@ControllerName" asp-action="Index">Quay Lại</a>
+            <input type="hidden" class="form-control" asp-for="Item.Id" name="Id">
+            <input type="hidden" class="form-control" asp-for="Item.Type" name="Type">
+            <input type="hidden" class="form-control" asp-for="Item.Ids" name="Ids">
+            <input type="hidden" asp-for="Item.EventId" name="EventId" />
+
+        </form>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/lib/ckeditor/ckeditor.js"></script>
+    <script src="~/lib/ckeditor/adapters/jquery.js"></script>
+
+    <script src="~/js/moment.js"></script>
+    <script src="~/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <script type="text/javascript">    
+            $(function () {
+
+                $('#CreatedDate').datetimepicker({
+                    format: 'DD/MM/YYYY HH:mm',
+                });
+            });         
+    </script>
+}

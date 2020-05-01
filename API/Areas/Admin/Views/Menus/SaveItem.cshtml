@@ -1,0 +1,176 @@
+﻿@model API.Areas.Admin.Models.Menus.MenusModel
+@{
+    if (Model.Item.Id == 0)
+    {
+        ViewData["Title"] = "Thêm mới menu";
+    }
+    else
+    {
+        ViewData["Title"] = "Cập nhật menu";
+    }
+    string ControllerName = this.ViewContext.RouteData.Values["controller"].ToString();
+}
+
+<div class="card">
+    <div class="card-header">
+        <h4>Chi tiết Menu</h4>
+    </div>
+    <div class="card-body">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <form asp-controller="@ControllerName" asp-action="SaveItem" method="post" id="myForm">
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Title">Tên <sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control" asp-for="Item.Title">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="Item.ParentId">Menu cha</label>
+                        <select asp-for="Item.ParentId" class="form-control" asp-items="Model.ListItemsMenus"></select>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Type">Loại menu</label>
+                        <select asp-for="Item.Type" class="form-control typeList" asp-items="Model.ListType"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Link">Link <sup class="text-danger"> (*)</sup></label>
+                        <input type="text" class="form-control url" asp-for="Item.Link">
+                    </div>
+                </div>
+
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label asp-for="Item.Title">Thứ tự hiển thị</label>
+                        <input type="text" class="form-control" asp-for="Item.Ordering">
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group" style="display:none">
+                        <label asp-for="Item.Icon">Icon</label>
+                        <input type="text" class="form-control" asp-for="Item.Icon">
+                    </div>
+                    <div class="form-group dmbaiviet">
+                        <label>Danh mục bài viết</label>
+                        <select class="form-control CatList">
+                            <option value="0">Chọn Danh mục</option>
+                            @foreach (var item in Model.ListCategoriesArticles)
+                            {
+                                <option value="@item.Id" alias="@item.Alias">@item.Title</option>
+                            }
+                        </select>
+                        <input type="hidden" class="form-control CatId" asp-for="Item.CatId">
+
+                    </div>
+
+                    <div class="form-group dmsanpham">
+                        <label>Danh mục sản phẩm</label>
+                        <select class="form-control ProductCatList">
+                            <option value="0">Chọn Danh mục sản phẩm</option>
+                            @foreach (var item in Model.ListCategoriesProducts)
+                            {                                
+                                <option value="@item.Id" alias="@item.Alias">@item.Title</option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+            <input type="submit" class="btn btn-primary" name="SaveItem" value="Lưu" />
+            <a class="btn btn-danger" asp-controller="@ControllerName" asp-action="Index" asp-route-catid="@Model.Item.CatId">Hủy</a>
+            <input type="hidden" class="form-control" asp-for="Item.Id">
+            <input type="hidden" class="form-control" asp-for="Item.Ids">
+            <input type="hidden" class="form-control" asp-for="SearchData.IdCoQuan" name="Item.IdCoQuan">
+
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            chooseType();
+            SetCatId();
+
+            $(".typeList").change(function () {
+                chooseType();
+                SetCatId();
+            })
+
+            $(".CatList").change(function () {
+                var catid = $(this).val();
+                $(".CatId").val(catid);
+                // SET URL
+                var alias = $('option:selected', this).attr('alias');
+                var url = "/categories/" + alias + "-" + catid + ".html";
+                $(".url").val(url);
+
+            })
+
+            $(".ProductCatList").change(function () {
+                var catid = $(this).val();
+                $(".CatId").val(catid);
+                // SET URL
+                var alias = $('option:selected', this).attr('alias');
+                var url = "/products/" + alias + "-" + catid + ".html";
+                $(".url").val(url);
+
+            })
+                        
+
+            $('#myForm').submit(function () {
+                var type = $(".typeList").val();
+                // Check if empty of not
+                if (type == 2) {
+                    var CatId = $(".CatId").val();
+                    if (CatId == 0) {
+                          alert('Vui lòng chọn danh mục.');
+                        return false;
+                    }
+                }
+            });
+        })
+
+        function SetCatId() {
+            var type = $(".typeList").val();
+            if (type == 2) {
+                var CatId = $(".CatId").val();
+                $(".CatList").val(CatId);
+            }
+            else if (type == 3) {
+                var CatId = $(".CatId").val();
+                $(".ProductCatList").val(CatId);
+            }
+            else {
+                $(".CatList").val(0);
+            }
+        }
+
+        function chooseType() {
+            var type = $(".typeList").val();
+            if (type == 1) {
+                $(".dmbaiviet").hide();
+                $(".dmsanpham").hide();
+                $(".url").prop('readonly', false);
+            }
+            else if (type == 2) {
+                $(".dmbaiviet").show();
+                $(".dmsanpham").hide();
+                $(".url").prop('readonly', true);
+            }
+            else if (type == 3) {
+                $(".dmbaiviet").hide();
+                $(".dmsanpham").show();
+                $(".url").prop('readonly', true);
+            }
+        }
+    </script>
+}

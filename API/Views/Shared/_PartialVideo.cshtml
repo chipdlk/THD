@@ -1,0 +1,52 @@
+﻿@using API.Areas.Admin.Models.Articles;
+@{
+    SearchArticles dto = new SearchArticles() { CurrentPage = 1, ItemsPerPage = 5, CatId = 22, IdCoQuan = 1 };
+    var listVideo = ArticlesService.GetListPagination(dto, "");
+}
+
+
+<!--Video-->
+<div class="box">
+    <div class="header white">
+        <a asp-controller="Articles" asp-action="GetByCat" asp-route-id="297" asp-route-alias="video" title="Video">
+            Video
+        </a>
+    </div>
+    <div class="body white">
+        <div id="VideoBox" class="carousel slide" data-ride="carousel">
+            <!-- The slideshow -->
+            <div class="carousel-inner">
+                @for (int i = 0; i < listVideo.Count(); i++)
+                {
+                    <div class="carousel-item @(i==0?"active":"")">
+                        <div class="VideoItem">
+                            <a class="img" asp-controller="Articles" asp-action="Detail" asp-route-id="@listVideo[i].Id" asp-route-alias="@listVideo[i].Alias" title="@listVideo[i].Title">
+                                <img src="/Home/ResizeImage?url=@listVideo[i].Images&width=500" alt="@listVideo[i].Title">
+                            </a>
+                            <p class="title">
+                                <a asp-controller="Articles" asp-action="Detail" asp-route-id="@listVideo[i].Id" asp-route-alias="@listVideo[i].Alias" title="@listVideo[i].Title">
+                                    @API.Models.StringUtilities.Truncate(@listVideo[i].Title, 100)
+                                </a>
+                            </p>
+                        </div>
+
+                    </div>
+
+                }
+
+            </div>
+            <!-- Left and right controls -->
+            <a class="carousel-control-prev control" href="#VideoBox" data-slide="prev">
+                <i class="far fa-arrow-alt-circle-left"></i>
+            </a>
+            <a class="carousel-control-next control" href="#VideoBox" data-slide="next">
+                <i class="far fa-arrow-alt-circle-right"></i>
+            </a>
+
+        </div>
+
+    </div>
+</div>
+
+
+  
