@@ -10,6 +10,7 @@ namespace API.Controllers
 {
     public class AlbumsController : Controller
     {
+        //add a comment
         public IActionResult Index([FromQuery] SearchCategoriesAblums dto)
         {
             int TotalItems = 0;
